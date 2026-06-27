@@ -1,0 +1,1794 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>李쎌씪以?AI ?숈뒿 ?뱀빋 ?ы꽭 | ?좎깮?섏쓽 ?숈뒿諛?/title>
+  <meta name="description" content="李쎌씪以묓븰援??뺣낫쨌?멸났吏???섏뾽???꾪븳 ?숈뒿???뱀빋 ?듯빀 ?ы꽭. 肄붾뵫, ?멸났吏?? ?붿????ㅻ━, ?댁쫰 ???ㅼ뼇???숈뒿 ?깆쓣 ?쒓납?먯꽌 ?먯깋?섍퀬 ?ㅽ뻾?섏꽭??" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ??? Design Tokens ??????????????????????????????? */
+    :root {
+      --primary:        #4a154b;
+      --primary-press:  #611f69;
+      --primary-tint:   #7b2d8b;
+      --primary-light:  #f9f0ff;
+      --cream:          #f4ede4;
+      --lavender:       #f9f0ff;
+      --lavender-mid:   #efe2ff;
+      --canvas:         #ffffff;
+      --ink:            #1d1d1d;
+      --ink-muted:      #696969;
+      --ink-faint:      #9b9b9b;
+      --border:         #e6e6e6;
+      --link:           #1264a3;
+      --shadow-sm:      0 2px 8px rgba(0,0,0,.08);
+      --shadow-md:      0 8px 32px rgba(74,21,75,.14);
+      --shadow-lg:      0 20px 60px rgba(74,21,75,.22);
+      --radius-card:    16px;
+      --radius-pill:    90px;
+      --radius-modal:   20px;
+      --transition:     .25s cubic-bezier(.4,0,.2,1);
+
+      /* Pastel mesh gradient */
+      --mesh-bg: radial-gradient(circle at 10% 20%, #f4ede4 0, transparent 35%),
+                 radial-gradient(circle at 80% 10%, #f9f0ff 0, transparent 30%),
+                 radial-gradient(circle at 50% 80%, #efe2ff 0, transparent 35%),
+                 #ffffff;
+    }
+
+    /* ??? Reset ??????????????????????????????????????? */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Noto Sans KR', 'Inter', sans-serif;
+      color: var(--ink);
+      background: var(--cream);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+    button { cursor: pointer; border: none; font-family: inherit; }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; }
+
+    /* ??? Scrollbar ???????????????????????????????????? */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #d4b8e0; border-radius: 10px; }
+
+    /* ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧??       ETHICS GATE MODAL
+    ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧??*/
+    #ethics-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(15, 5, 20, .82);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      animation: fadeIn .4s ease;
+    }
+    #ethics-overlay.hidden { display: none; }
+
+    #ethics-modal {
+      background: #fff;
+      border-radius: var(--radius-modal);
+      max-width: 760px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      animation: slideUp .4s cubic-bezier(.34,1.4,.64,1);
+    }
+
+    .ethics-header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-tint) 60%, #9b3db8 100%);
+      padding: 32px 36px 28px;
+      border-radius: var(--radius-modal) var(--radius-modal) 0 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .ethics-header::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at 80% 20%, rgba(255,255,255,.12) 0, transparent 50%);
+      pointer-events: none;
+    }
+    .ethics-header .badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,.18);
+      color: #fff;
+      font-size: 12px; font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 90px;
+      letter-spacing: .5px;
+      margin-bottom: 12px;
+    }
+    .ethics-header h1 {
+      color: #fff;
+      font-size: clamp(18px, 4vw, 26px);
+      font-weight: 900;
+      line-height: 1.3;
+      margin-bottom: 8px;
+    }
+    .ethics-header p {
+      color: rgba(255,255,255,.8);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .ethics-icon-hero {
+      position: absolute; right: 28px; bottom: -8px;
+      font-size: 72px; opacity: .18;
+      transform: rotate(-8deg);
+      pointer-events: none;
+    }
+
+    .ethics-body {
+      padding: 28px 36px;
+    }
+    .ethics-intro {
+      background: var(--lavender);
+      border-left: 4px solid var(--primary);
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      font-size: 14px;
+      color: var(--ink-muted);
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+
+    .guide-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    @media (max-width: 600px) {
+      .guide-grid { grid-template-columns: 1fr; }
+      .ethics-body { padding: 20px 20px; }
+      .ethics-header { padding: 24px 20px 20px; }
+    }
+
+    .guide-card {
+      background: var(--canvas);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      transition: border-color var(--transition), box-shadow var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .guide-card:hover {
+      border-color: var(--primary-tint);
+      box-shadow: 0 4px 16px rgba(74,21,75,.12);
+    }
+    .guide-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0;
+      width: 4px; height: 100%;
+    }
+    .guide-card.primary-hue::before   { background: linear-gradient(180deg, #f5a623, #f7b731); }
+    .guide-card.orange-hue::before    { background: linear-gradient(180deg, #ff7043, #ff5722); }
+    .guide-card.green-hue::before     { background: linear-gradient(180deg, #66bb6a, #43a047); }
+    .guide-card.teal-hue::before      { background: linear-gradient(180deg, #26c6da, #00acc1); }
+    .guide-card.blue-hue::before      { background: linear-gradient(180deg, #5c6bc0, #3949ab); }
+    .guide-card.purple-hue::before    { background: linear-gradient(180deg, var(--primary-tint), var(--primary)); }
+
+    .guide-num-row {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 8px;
+    }
+    .guide-num {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 900; color: #fff;
+      flex-shrink: 0;
+    }
+    .guide-num.c1 { background: linear-gradient(135deg, #f5a623, #f7b731); }
+    .guide-num.c2 { background: linear-gradient(135deg, #ff7043, #ff5722); }
+    .guide-num.c3 { background: linear-gradient(135deg, #66bb6a, #43a047); }
+    .guide-num.c4 { background: linear-gradient(135deg, #26c6da, #00acc1); }
+    .guide-num.c5 { background: linear-gradient(135deg, #5c6bc0, #3949ab); }
+    .guide-num.c6 { background: linear-gradient(135deg, #9c27b0, #6a1b9a); }
+
+    .guide-label {
+      font-size: 11px; font-weight: 700;
+      color: var(--ink-muted);
+      letter-spacing: .3px;
+    }
+    .guide-value-badge {
+      display: flex; flex-wrap: wrap; gap: 4px;
+      margin-bottom: 6px;
+    }
+    .value-chip {
+      font-size: 10px; font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 90px;
+      color: var(--primary);
+      background: var(--lavender);
+    }
+    .guide-title {
+      font-size: 13.5px; font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 6px;
+      line-height: 1.4;
+    }
+    .guide-desc {
+      font-size: 12px;
+      color: var(--ink-muted);
+      line-height: 1.65;
+    }
+
+    .ethics-pledge {
+      background: linear-gradient(135deg, #f9f0ff 0%, #efe2ff 100%);
+      border: 2px dashed #c398e0;
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin-bottom: 22px;
+      display: flex; align-items: flex-start; gap: 12px;
+    }
+    .pledge-icon { font-size: 28px; flex-shrink: 0; margin-top: 2px; }
+    .pledge-text {
+      font-size: 14px; font-weight: 700;
+      color: var(--primary);
+      line-height: 1.6;
+    }
+    .pledge-text span {
+      display: block;
+      font-size: 12px; font-weight: 400;
+      color: var(--ink-muted);
+      margin-top: 4px;
+    }
+
+    .btn-ethics-enter {
+      width: 100%;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-tint) 100%);
+      color: #fff;
+      font-size: 15px; font-weight: 900;
+      padding: 18px 28px;
+      border-radius: var(--radius-pill);
+      letter-spacing: .3px;
+      transition: all var(--transition);
+      box-shadow: 0 6px 24px rgba(74,21,75,.35);
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-ethics-enter::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(255,255,255,0);
+      transition: background var(--transition);
+    }
+    .btn-ethics-enter:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 32px rgba(74,21,75,.45);
+    }
+    .btn-ethics-enter:hover::after { background: rgba(255,255,255,.08); }
+    .btn-ethics-enter:active { transform: translateY(0); }
+
+    .ethics-notice {
+      text-align: center;
+      font-size: 11.5px;
+      color: var(--ink-faint);
+      margin-top: 12px;
+      line-height: 1.6;
+    }
+    .ethics-notice a {
+      color: var(--primary);
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    /* ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧??       HEADER
+    ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧??*/
+    #header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-press) 40%, #3d0d3e 100%);
+      padding: 0 28px;
+      height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 16px rgba(74,21,75,.3);
+    }
+    .header-logo {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .logo-mark {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, #f5a623, #f7b731);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      box-shadow: 0 2px 8px rgba(245,166,35,.4);
+    }
+    .logo-text {
+      color: #fff;
+      font-size: 15px; font-weight: 900;
+      letter-spacing: -.2px;
+    }
+    .logo-text span {
+      display: block;
+      font-size: 10px; font-weight: 400;
+      color: rgba(255,255,255,.65);
+      letter-spacing: .3px;
+    }
+
+    .header-search {
+      flex: 1; max-width: 380px;
+      margin: 0 24px;
+      position: relative;
+    }
+    .header-search input {
+      width: 100%;
+      background: rgba(255,255,255,.12);
+      border: 1.5px solid rgba(255,255,255,.2);
+      border-radius: 90px;
+      padding: 9px 16px 9px 42px;
+      color: #fff;
+      font-size: 13px;
+      font-family: inherit;
+      outline: none;
+      transition: background var(--transition), border-color var(--transition);
+    }
+    .header-search input::placeholder { color: rgba(255,255,255,.5); }
+    .header-search input:focus {
+      background: rgba(255,255,255,.2);
+      border-color: rgba(255,255,255,.5);
+    }
+    .header-search .search-icon {
+      position: absolute; left: 14px; top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255,255,255,.55);
+      pointer-events: none; font-size: 15px;
+    }
+
+    .header-actions { display: flex; align-items: center; gap: 10px; }
+    .btn-guide-again {
+      background: rgba(255,255,255,.12);
+      color: rgba(255,255,255,.85);
+      font-size: 12px; font-weight: 600;
+      padding: 7px 14px;
+      border-radius: 90px;
+      border: 1px solid rgba(255,255,255,.2);
+      transition: all var(--transition);
+      display: flex; align-items: center; gap: 5px;
+    }
+    .btn-guide-again:hover {
+      background: rgba(255,255,255,.22);
+      color: #fff;
+    }
+    .btn-teacher {
+      background: linear-gradient(135deg, #f5a623, #f7b731);
+      color: var(--primary);
+      font-size: 12px; font-weight: 800;
+      padding: 7px 16px;
+      border-radius: 90px;
+      transition: all var(--transition);
+      box-shadow: 0 2px 8px rgba(245,166,35,.3);
+    }
+    .btn-teacher:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(245,166,35,.4); }
+
+    /* ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧??       MAIN LAYOUT
+    ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧??*/
+    #main-wrap {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ??? Sidebar ????????????????????????????????????? */
+    #sidebar {
+      width: 220px;
+      flex-shrink: 0;
+      background: #fff;
+      border-right: 1px solid var(--border);
+      padding: 20px 12px;
+      overflow-y: auto;
+      position: sticky;
+      top: 64px;
+      height: calc(100vh - 64px);
+    }
+
+    .sidebar-section { margin-bottom: 20px; }
+    .sidebar-label {
+      font-size: 10px; font-weight: 700;
+      color: var(--ink-faint);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 0 10px;
+      margin-bottom: 6px;
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 13.5px; font-weight: 500;
+      color: var(--ink-muted);
+      cursor: pointer;
+      transition: all var(--transition);
+      margin-bottom: 2px;
+    }
+    .nav-item:hover { background: var(--lavender); color: var(--primary); }
+    .nav-item.active {
+      background: var(--primary);
+      color: #fff;
+      font-weight: 700;
+    }
+    .nav-item .nav-icon { font-size: 16px; flex-shrink: 0; }
+    .nav-item .nav-count {
+      margin-left: auto;
+      background: rgba(0,0,0,.08);
+      color: inherit;
+      font-size: 10px; font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 90px;
+    }
+    .nav-item.active .nav-count { background: rgba(255,255,255,.25); }
+
+    .today-badge {
+      display: flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, #fff8e1, #fff3c4);
+      border: 1.5px solid #f5a623;
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .today-badge:hover { box-shadow: 0 4px 12px rgba(245,166,35,.2); }
+    .today-badge .today-icon { font-size: 18px; }
+    .today-badge .today-text { font-size: 12.5px; font-weight: 700; color: #b45309; }
+    .today-badge .today-sub { font-size: 10px; color: #92400e; margin-top: 1px; }
+
+    /* ??? Content area ???????????????????????????????? */
+    #content {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      background: var(--mesh-bg);
+    }
+
+    /* ??? Hero Banner ????????????????????????????????? */
+    .hero-banner {
+      padding: 32px 32px 0;
+    }
+    .hero-inner {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-tint) 60%, #9b3db8 100%);
+      border-radius: 20px;
+      padding: 28px 32px;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+    }
+    .hero-inner::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,.1) 0, transparent 40%),
+        radial-gradient(circle at 10% 80%, rgba(255,255,255,.06) 0, transparent 35%);
+      pointer-events: none;
+    }
+    .hero-inner h2 {
+      font-size: clamp(18px, 3vw, 24px);
+      font-weight: 900; line-height: 1.3;
+      margin-bottom: 8px;
+    }
+    .hero-inner p { font-size: 14px; color: rgba(255,255,255,.8); line-height: 1.6; }
+    .hero-emoji { position: absolute; right: 32px; top: 50%; transform: translateY(-50%); font-size: 56px; opacity: .25; }
+
+    /* ??? Section ????????????????????????????????????? */
+    .section {
+      padding: 28px 32px;
+    }
+    .section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 18px;
+    }
+    .section-title {
+      font-size: 17px; font-weight: 800;
+      color: var(--ink);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-title .dot {
+      width: 8px; height: 8px;
+      background: var(--primary);
+      border-radius: 50%;
+    }
+    .section-hint {
+      font-size: 12px; color: var(--ink-faint);
+      display: flex; align-items: center; gap: 4px;
+    }
+
+    /* ??? Card Scroll Strip ??????????????????????????? */
+    .card-strip {
+      display: flex;
+      gap: 18px;
+      overflow-x: auto;
+      padding-bottom: 16px;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: thin;
+    }
+    .card-strip::-webkit-scrollbar { height: 4px; }
+    .card-strip::-webkit-scrollbar-thumb { background: #d4b8e0; border-radius: 10px; }
+
+    /* ??? App Card ???????????????????????????????????? */
+    .app-card {
+      flex: 0 0 220px;
+      background: var(--canvas);
+      border-radius: var(--radius-card);
+      border: 1.5px solid var(--border);
+      overflow: hidden;
+      scroll-snap-align: start;
+      cursor: pointer;
+      transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+      position: relative;
+    }
+    .app-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+      border-color: #c398e0;
+    }
+
+    .card-thumb {
+      height: 120px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 52px;
+      position: relative;
+      overflow: hidden;
+    }
+    .card-thumb::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 40px;
+      background: linear-gradient(to bottom, transparent, rgba(255,255,255,.9));
+    }
+
+    .card-body { padding: 14px 16px 16px; }
+    .card-meta {
+      display: flex; align-items: center; gap: 6px;
+      margin-bottom: 6px;
+    }
+    .cat-badge {
+      font-size: 10px; font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 90px;
+      color: var(--primary);
+      background: var(--lavender);
+    }
+    .grade-badge {
+      font-size: 10px; font-weight: 600;
+      color: var(--ink-faint);
+    }
+    .status-badge {
+      margin-left: auto;
+      font-size: 9px; font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 90px;
+      background: #fef3c7;
+      color: #b45309;
+    }
+    .card-title {
+      font-size: 13.5px; font-weight: 800;
+      color: var(--ink);
+      margin-bottom: 5px;
+      line-height: 1.3;
+    }
+    .card-desc {
+      font-size: 11.5px;
+      color: var(--ink-muted);
+      line-height: 1.55;
+      margin-bottom: 12px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .card-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 12px; }
+    .tag {
+      font-size: 10px;
+      color: var(--ink-faint);
+      background: #f5f5f5;
+      padding: 2px 7px;
+      border-radius: 90px;
+    }
+    .btn-preview {
+      width: 100%;
+      background: var(--lavender);
+      color: var(--primary);
+      font-size: 12.5px; font-weight: 700;
+      padding: 9px;
+      border-radius: var(--radius-pill);
+      transition: all var(--transition);
+    }
+    .btn-preview:hover {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    /* ??? Today Card (featured) ??????????????????????? */
+    .today-card {
+      flex: 0 0 280px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-tint) 100%);
+      color: #fff;
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      scroll-snap-align: start;
+      cursor: pointer;
+      transition: transform var(--transition), box-shadow var(--transition);
+      position: relative;
+    }
+    .today-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 36px rgba(74,21,75,.35);
+    }
+    .today-card .card-thumb { background: rgba(255,255,255,.1); }
+    .today-card .card-thumb::after { background: linear-gradient(to bottom, transparent, rgba(74,21,75,.5)); }
+    .today-card .card-body { padding: 14px 16px 16px; }
+    .today-card .card-label {
+      font-size: 10px; font-weight: 700;
+      background: #f5a623;
+      color: #fff;
+      padding: 3px 9px;
+      border-radius: 90px;
+      display: inline-block;
+      margin-bottom: 8px;
+    }
+    .today-card .card-title { color: #fff; font-size: 15px; }
+    .today-card .card-desc { color: rgba(255,255,255,.75); }
+    .today-card .btn-enter {
+      width: 100%;
+      background: #fff;
+      color: var(--primary);
+      font-size: 13px; font-weight: 800;
+      padding: 10px;
+      border-radius: var(--radius-pill);
+      transition: all var(--transition);
+    }
+    .today-card .btn-enter:hover { background: #f0e0ff; transform: scale(1.02); }
+
+    /* ??? Empty state ????????????????????????????????? */
+    .empty-state {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--ink-faint);
+    }
+    .empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; }
+    .empty-state p { font-size: 14px; }
+
+    /* ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧??       APP PREVIEW MODAL
+    ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧??*/
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 1000;
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      opacity: 0; pointer-events: none;
+      transition: opacity var(--transition);
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+    .modal-box {
+      background: #fff;
+      border-radius: var(--radius-modal);
+      max-width: 580px; width: 100%;
+      max-height: 88vh; overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      transform: scale(.94) translateY(16px);
+      transition: transform .3s cubic-bezier(.34,1.4,.64,1), opacity .25s;
+    }
+    .modal-overlay.open .modal-box { transform: scale(1) translateY(0); }
+
+    .modal-thumb {
+      height: 180px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 80px;
+      border-radius: var(--radius-modal) var(--radius-modal) 0 0;
+      position: relative;
+    }
+    .modal-close-btn {
+      position: absolute; top: 12px; right: 12px;
+      width: 32px; height: 32px;
+      background: rgba(255,255,255,.9);
+      border-radius: 50%;
+      font-size: 16px; color: var(--ink);
+      display: flex; align-items: center; justify-content: center;
+      transition: background var(--transition);
+    }
+    .modal-close-btn:hover { background: #fff; }
+
+    .modal-content { padding: 24px 28px; }
+    .modal-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+    .modal-title { font-size: 20px; font-weight: 900; margin-bottom: 10px; line-height: 1.3; }
+    .modal-desc { font-size: 14px; color: var(--ink-muted); line-height: 1.7; margin-bottom: 18px; }
+
+    .modal-section-title {
+      font-size: 12px; font-weight: 700;
+      color: var(--ink-faint);
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .modal-goals { margin-bottom: 18px; }
+    .modal-goal-item {
+      display: flex; align-items: flex-start; gap: 8px;
+      font-size: 13.5px; color: var(--ink);
+      margin-bottom: 6px; line-height: 1.5;
+    }
+    .modal-goal-item::before {
+      content: '??;
+      color: var(--primary);
+      font-weight: 900; font-size: 13px;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .modal-info-row {
+      display: flex; gap: 16px; flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .modal-info-chip {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; color: var(--ink-muted);
+    }
+    .modal-info-chip .chip-icon { font-size: 14px; }
+
+    .modal-actions { display: flex; gap: 10px; }
+    .btn-run {
+      flex: 1;
+      background: linear-gradient(135deg, var(--primary), var(--primary-tint));
+      color: #fff;
+      font-size: 14px; font-weight: 800;
+      padding: 14px 24px;
+      border-radius: var(--radius-pill);
+      transition: all var(--transition);
+      box-shadow: 0 4px 16px rgba(74,21,75,.3);
+    }
+    .btn-run:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(74,21,75,.4); }
+    .btn-close {
+      background: var(--lavender);
+      color: var(--primary);
+      font-size: 14px; font-weight: 700;
+      padding: 14px 20px;
+      border-radius: var(--radius-pill);
+      transition: all var(--transition);
+    }
+    .btn-close:hover { background: #e6d4f5; }
+
+    /* ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧??       LEGAL MODALS (?댁슜?쎄? / 媛쒖씤?뺣낫泥섎━諛⑹묠)
+    ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧??*/
+    .legal-overlay {
+      position: fixed; inset: 0; z-index: 2000;
+      background: rgba(0,0,0,.6);
+      backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      opacity: 0; pointer-events: none;
+      transition: opacity var(--transition);
+    }
+    .legal-overlay.open { opacity: 1; pointer-events: all; }
+
+    .legal-box {
+      background: #fff;
+      border-radius: var(--radius-modal);
+      max-width: 660px; width: 100%;
+      max-height: 85vh; overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      display: flex; flex-direction: column;
+      transform: scale(.95) translateY(20px);
+      transition: transform .3s cubic-bezier(.34,1.4,.64,1);
+    }
+    .legal-overlay.open .legal-box { transform: scale(1) translateY(0); }
+
+    .legal-header {
+      background: linear-gradient(135deg, var(--primary), var(--primary-tint));
+      padding: 20px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .legal-header h2 { color: #fff; font-size: 16px; font-weight: 800; }
+    .legal-close {
+      width: 30px; height: 30px;
+      background: rgba(255,255,255,.2);
+      border-radius: 50%;
+      font-size: 16px; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      transition: background var(--transition);
+    }
+    .legal-close:hover { background: rgba(255,255,255,.3); }
+
+    .legal-scroll {
+      flex: 1; overflow-y: auto;
+      padding: 24px 28px;
+    }
+    .legal-scroll h3 {
+      font-size: 14px; font-weight: 800;
+      color: var(--primary);
+      margin: 20px 0 8px;
+    }
+    .legal-scroll h3:first-child { margin-top: 0; }
+    .legal-scroll p, .legal-scroll li {
+      font-size: 13px; color: var(--ink-muted);
+      line-height: 1.75;
+    }
+    .legal-scroll ul { padding-left: 18px; margin: 6px 0; }
+    .legal-scroll li { margin-bottom: 4px; }
+    .legal-scroll .legal-date {
+      text-align: right;
+      font-size: 12px; color: var(--ink-faint);
+      margin-top: 20px; padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧??       FOOTER
+    ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧??*/
+    #footer {
+      background: #1a0d1b;
+      color: rgba(255,255,255,.6);
+      padding: 28px 32px;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex; flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .footer-brand { flex: 1; min-width: 200px; }
+    .footer-brand .brand-name {
+      color: #fff; font-size: 14px; font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .footer-brand .brand-org { color: rgba(255,255,255,.5); font-size: 12px; }
+    .footer-links {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      margin-top: 12px;
+    }
+    .footer-link {
+      color: rgba(255,255,255,.55);
+      font-size: 12px;
+      cursor: pointer;
+      padding: 3px 0;
+      border-bottom: 1px solid transparent;
+      transition: color var(--transition), border-color var(--transition);
+    }
+    .footer-link:hover { color: #fff; border-color: rgba(255,255,255,.4); }
+    .footer-divider { color: rgba(255,255,255,.2); margin: 0 4px; }
+
+    .footer-info { text-align: right; min-width: 200px; }
+    .footer-info p { margin-bottom: 2px; }
+    .footer-copyright {
+      margin-top: 16px; padding-top: 14px;
+      border-top: 1px solid rgba(255,255,255,.08);
+      text-align: center; font-size: 11px;
+      color: rgba(255,255,255,.3);
+    }
+
+    /* ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧??       ANIMATIONS
+    ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧??*/
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp { from { transform: translateY(40px) scale(.96); opacity: 0; } to { transform: none; opacity: 1; } }
+
+    /* ??? No search results ??????????????????????????? */
+    #no-results {
+      display: none;
+      grid-column: 1/-1;
+    }
+
+    /* ??? Responsive ?????????????????????????????????? */
+    @media (max-width: 768px) {
+      #sidebar { display: none; }
+      #header { padding: 0 16px; }
+      .header-search { max-width: 200px; margin: 0 12px; }
+      .section { padding: 20px 16px; }
+      .hero-banner { padding: 20px 16px 0; }
+      #footer { padding: 20px 16px; }
+      .footer-inner { flex-direction: column; }
+      .footer-info { text-align: left; }
+      .modal-content { padding: 16px 20px; }
+    }
+    @media (max-width: 480px) {
+      .header-search { display: none; }
+      .btn-guide-again span { display: none; }
+    }
+
+    /* ??? Pulse animation on today badge ????????????? */
+    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.6; } }
+    .pulse { animation: pulse 2s ease-in-out infinite; }
+
+    /* ??? Shimmer effect for cards ???????????????????? */
+    .app-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,.5) 50%, transparent 60%);
+      background-size: 200% 200%;
+      opacity: 0;
+      transition: opacity .3s;
+      pointer-events: none;
+      border-radius: var(--radius-card);
+    }
+    .app-card:hover::before { opacity: 1; }
+  </style>
+</head>
+<body>
+
+<!-- ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+     ETHICS GATE MODAL
+?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧 -->
+<div id="ethics-overlay" role="dialog" aria-modal="true" aria-labelledby="ethics-title">
+  <div id="ethics-modal">
+
+    <div class="ethics-header">
+      <div class="badge">?뱥 ?낆옣 ???꾨룆</div>
+      <h1 id="ethics-title">AI ?ㅻ━ ?듭떖媛?대뱶瑜??뺤씤??二쇱꽭??/h1>
+      <p>?앹꽦??AI瑜??щ컮瑜닿퀬 ?꾨챸?섍쾶 ?ъ슜?섍린 ?꾪븳 ?곕━留뚯쓽 ?쎌냽?낅땲??<br>?꾨옒 6媛吏 媛?대뱶瑜?瑗쇨세???쎄퀬 ?ㅼ쿇???ㅼ쭚??二쇱꽭??</p>
+      <div class="ethics-icon-hero">?쨼</div>
+    </div>
+
+    <div class="ethics-body">
+      <div class="ethics-intro">
+        ?뱦 ???ы꽭?먯꽌 ?쒓났?섎뒗 AI ?숈뒿 ?꾧뎄??<strong>?앹꽦??AI</strong>? ?④퍡 ?ъ슜?⑸땲??
+        ?щ컮瑜?AI ?쒖슜???꾪빐 ?꾨옒 ?듭떖 媛?대뱶瑜?癒쇱? ?뺤씤??二쇱꽭??
+        踰꾪듉???대┃?섎㈃ ?쒕룞???쒖옉?????덉뒿?덈떎.
+      </div>
+
+      <div class="guide-grid">
+        <!-- 媛?대뱶 1 -->
+        <div class="guide-card primary-hue">
+          <div class="guide-num-row">
+            <div class="guide-num c1">1</div>
+            <div class="guide-label">媛?대뱶 1 쨌 ?쒖슜 紐⑹쟻</div>
+          </div>
+          <div class="guide-value-badge">
+            <span class="value-chip">二쇰룄??/span>
+            <span class="value-chip">?⑸ぉ?곸꽦</span>
+          </div>
+          <div class="guide-title">?앹꽦??AI???쒖슜 ?댁쑀? 踰붿쐞瑜??ㅼ뒪濡??ㅻ챸?????덉뼱???댁슂.</div>
+          <div class="guide-desc">?앹꽦??AI瑜??쒖슜?섎뒗 ?댁쑀媛 吏꾩쭨 沅곴툑??寃껋쓣 ?먭뎄?섍린 ?꾪빐 蹂댁“ ?꾧뎄濡??쒖슜?섎젮??寃껋씤吏, ?숈젣瑜?鍮⑤━ ?앸궡?ㅻ뒗 寃껋씤吏 ?ㅼ뒪濡쒖뿉寃?癒쇱? 臾쇱뼱遊먯슂. ?좎깮?섏씠 ?덈씫?섏떊 踰붿쐞?먯꽌 ?닿? ?뺥븳 ?숈뒿 紐⑺몴瑜??ъ꽦?섍린 ?꾪빐 ?앹꽦??AI瑜?蹂댁“ ?꾧뎄濡??쒖슜?댁슂.</div>
+        </div>
+        <!-- 媛?대뱶 2 -->
+        <div class="guide-card orange-hue">
+          <div class="guide-num-row">
+            <div class="guide-num c2">2</div>
+            <div class="guide-label">媛?대뱶 2 쨌 二쇰룄???숈뒿</div>
+          </div>
+          <div class="guide-value-badge">
+            <span class="value-chip">二쇰룄??/span>
+          </div>
+          <div class="guide-title">?앹꽦??AI瑜??ъ슜?섍린 ?? ?닿? ?꾨뒗 寃껋쓣 ?뺣━?섍퀬 吏덈Ц???ㅺ퀎?댁슂.</div>
+          <div class="guide-desc">?앹꽦??AI瑜??ъ슜?섍린 ?꾩뿉 ???앷컖??癒쇱? ?곸뼱遊먯슂. ?닿? 紐⑤Ⅴ??寃껋씠 臾댁뾿?몄? ?뚯븙???ㅼ쓬, ?대? 諛곗슦湲??꾪빐 ?대뼡 ?꾩???諛쏆쓣吏 援ъ껜?곸씤 吏덈Ц(?꾨＼?꾪듃)??留뚮뱾?댁슂.</div>
+        </div>
+        <!-- 媛?대뱶 3 -->
+        <div class="guide-card green-hue">
+          <div class="guide-num-row">
+            <div class="guide-num c3">3</div>
+            <div class="guide-label">媛?대뱶 3 쨌 鍮꾪뙋??寃利?/div>
+          </div>
+          <div class="guide-value-badge">
+            <span class="value-chip">二쇰룄??/span>
+          </div>
+          <div class="guide-title">?앹꽦??AI???듬? ???ㅻ쪟???명뼢???쒓컖??吏곸젒 李얠븘蹂닿퀬 鍮꾧탳?댁슂.</div>
+          <div class="guide-desc">?앹꽦??AI??媛??洹몃윺??븳 嫄곗쭞留??좊（?쒕꽕?댁뀡)???????덉뼱?? ?앹꽦??AI???듬???留뱀떊?섏? ?딄퀬 援먭낵?쒕굹 怨듭떇 ?먮즺瑜??듯빐 ??踰???援먯감 寃利앺빐?? ?쒖そ?쇰줈 移섏슦移??앷컖? ?꾨땶吏 鍮꾪뙋?곸쑝濡?寃利앺븯???듦???媛?몄슂.</div>
+        </div>
+        <!-- 媛?대뱶 4 -->
+        <div class="guide-card teal-hue">
+          <div class="guide-num-row">
+            <div class="guide-num c4">4</div>
+            <div class="guide-label">媛?대뱶 4 쨌 ?ш퀬???뺤옣</div>
+          </div>
+          <div class="guide-value-badge">
+            <span class="value-chip">二쇰룄??/span>
+            <span class="value-chip">?⑸ぉ?곸꽦</span>
+          </div>
+          <div class="guide-title">?⑥닚??吏덈Ц???섏뼱 醫뗭? 吏덈Ц???ㅺ퀎?섎ŉ ?앷컖??踰붿쐞瑜??볧???</div>
+          <div class="guide-desc">?앹꽦??AI?먭쾶 ?⑥닚???뺣떟留뚯쓣 ?붽뎄?섎뒗 寃껋? 諛붾엺吏곹븯吏 ?딆븘?? ?앹꽦??AI ?듬???洹쇨굅? ?ㅻⅨ 愿?먯쓣 怨좊젮?섏뿬, "??洹몃윺源?", "?ㅻⅨ 諛⑸쾿? ?놁쓣源?"?쇨퀬 ?ㅺ컖?꾩쓽 ?ы솕 吏덈Ц???댁뼱媛?? ?앹꽦??AI瑜??좊줎 ?뚰듃?덉쿂???쒖슜?섏뿬 ?섏쓽 ?앷컖???ㅼ썙媛??</div>
+        </div>
+        <!-- 媛?대뱶 5 -->
+        <div class="guide-card blue-hue">
+          <div class="guide-num-row">
+            <div class="guide-num c5">5</div>
+            <div class="guide-label">媛?대뱶 5 쨌 ?덉쟾怨?愿怨?/div>
+          </div>
+          <div class="guide-value-badge">
+            <span class="value-chip">?덉쟾??/span>
+          </div>
+          <div class="guide-title">媛쒖씤?뺣낫瑜??ㅼ뒪濡?吏?ㅺ퀬, ?앹꽦??AI? ?뺤꽌??嫄곕━瑜??좎??댁슂.</div>
+          <div class="guide-desc">???먮뒗 ??몄쓽 ?대쫫, ?곕씫泥? 二쇱냼, 媛쒖씤 ?뺣낫 ?깆쓣 ?⑤?濡??앹꽦??AI???낅젰?섏? 留먯븘?? ?대윭???뺣낫媛 ?앹꽦??AI ?숈뒿???쒖슜?????덉뼱?? ?띿긽?섍굅???섎뱺 ?쇱씠 ?덉쓣 ?뚮뒗 ?앹꽦??AI蹂대떎 ?섎? 吏꾩떖?쇰줈 ?댄빐??以????덈뒗 媛議? ?좎깮?? 移쒓뎄?ㅺ낵 留덉쓬???섎닠??</div>
+        </div>
+        <!-- 媛?대뱶 6 -->
+        <div class="guide-card purple-hue">
+          <div class="guide-num-row">
+            <div class="guide-num c6">6</div>
+            <div class="guide-label">媛?대뱶 6 쨌 ?щ챸?굿룹쑄由?/div>
+          </div>
+          <div class="guide-value-badge">
+            <span class="value-chip">?щ챸??/span>
+          </div>
+          <div class="guide-title">?앹꽦??AI瑜??쒖슜??遺遺꾧낵 ???앷컖??紐낇솗?섍쾶 援щ텇?댁꽌 諛앺???</div>
+          <div class="guide-desc">?섏뾽?대굹 ?됯? 諛?怨쇱젣?먯꽌 ?앹꽦??AI???꾩???諛쏆븯?ㅻ㈃, ?대뼡 ?꾧뎄瑜??대뼡 諛⑹떇?쇰줈 李멸퀬?덈뒗吏 ?щ챸?섍쾶 諛앺??? ?앹꽦??AI???듬????닿? ??寃껋쿂???쒖텧?섎뒗 寃껋? ?쒖젅쨌遺?뺥뻾?꾩엫??紐낆떖?댁슂.</div>
+        </div>
+      </div>
+
+      <!-- ?쒖빟 ?곸뿭 -->
+      <div class="ethics-pledge">
+        <div class="pledge-icon">?쩃</div>
+        <div class="pledge-text">
+          ?섎뒗 ?ㅻ━ ?듭떖媛?대뱶瑜?鍮좎쭚?놁씠 ?쎄퀬 ?대? ?ㅼ쿇?섍쿋?듬땲??
+          <span>??6媛吏 媛?대뱶瑜??댄빐?섍퀬 AI ?숈뒿 ?쒕룞?먯꽌 ?대? 吏??寃껋쓣 ?ㅼ쭚?⑸땲??</span>
+        </div>
+      </div>
+
+      <button class="btn-ethics-enter" id="btn-ethics-enter" onclick="enterPortal()">
+        ??&nbsp;?섎뒗 ?ㅻ━ ?듭떖媛?대뱶瑜?鍮좎쭚?놁씠 ?쎄퀬 ?대? ?ㅼ쿇?섍쿋?듬땲??
+      </button>
+      <p class="ethics-notice">
+        踰꾪듉???대┃?섎㈃ 蹂??쒕룞?쇰줈 ?대룞?⑸땲?? ?몄젣?좎? ?ㅻ뜑??        <a onclick="openEthicsGuide()">?뱥 媛?대뱶 ?ㅼ떆 蹂닿린</a>瑜?        ?듯빐 ?ㅼ떆 ?뺤씤?????덉뒿?덈떎.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+     HEADER
+?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧 -->
+<header id="header">
+  <div class="header-logo">
+    <div class="logo-mark">?룶</div>
+    <div class="logo-text">
+      李쎌씪以?AI ?숈뒿 ?ы꽭
+      <span>Changil Middle School 쨌 Learning Apps</span>
+    </div>
+  </div>
+
+  <div class="header-search">
+    <span class="search-icon">?뵇</span>
+    <input type="search" id="search-input" placeholder="???대쫫, 移댄뀒怨좊━, ?쒓렇 寃??.." aria-label="??寃?? oninput="handleSearch(this.value)" />
+  </div>
+
+  <div class="header-actions">
+    <button class="btn-guide-again" id="btn-guide-again" onclick="openEthicsGuide()" title="?ㅻ━ 媛?대뱶 ?ㅼ떆 蹂닿린">
+      ?뱥 <span>媛?대뱶 ?ㅼ떆 蹂닿린</span>
+    </button>
+    <button class="btn-teacher" id="btn-teacher-toggle" onclick="toggleTeacherMode()">
+      ?뫆?랅윆?援먯궗 蹂닿린
+    </button>
+  </div>
+</header>
+
+<!-- ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+     MAIN LAYOUT
+?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧 -->
+<div id="main-wrap">
+
+  <!-- SIDEBAR -->
+  <nav id="sidebar" aria-label="移댄뀒怨좊━ ?먯깋">
+    <div class="sidebar-section">
+      <div class="today-badge" onclick="filterCategory('?ㅻ뒛???섏뾽??)">
+        <div class="today-icon pulse">狩?/div>
+        <div>
+          <div class="today-text">?ㅻ뒛???섏뾽??/div>
+          <div class="today-sub">?좎깮?섏씠 吏?뺥븳 ??/div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">?먯깋</div>
+      <div class="nav-item active" data-cat="?꾩껜?? onclick="filterCategory('?꾩껜??)">
+        <span class="nav-icon">?룧</span> ?꾩껜 ??<span class="nav-count" id="count-all">0</span>
+      </div>
+      <div class="nav-item" data-cat="肄붾뵫" onclick="filterCategory('肄붾뵫')">
+        <span class="nav-icon">?뮲</span> 肄붾뵫 <span class="nav-count" id="count-肄붾뵫">0</span>
+      </div>
+      <div class="nav-item" data-cat="?멸났吏?? onclick="filterCategory('?멸났吏??)">
+        <span class="nav-icon">?쨼</span> ?멸났吏??<span class="nav-count" id="count-?멸났吏??>0</span>
+      </div>
+      <div class="nav-item" data-cat="?붿????ㅻ━" onclick="filterCategory('?붿????ㅻ━')">
+        <span class="nav-icon">?썳截?/span> ?붿????ㅻ━ <span class="nav-count" id="count-?붿????ㅻ━">0</span>
+      </div>
+      <div class="nav-item" data-cat="?댁쫰쨌蹂듭뒿" onclick="filterCategory('?댁쫰쨌蹂듭뒿')">
+        <span class="nav-icon">?뱷</span> ?댁쫰쨌蹂듭뒿 <span class="nav-count" id="count-?댁쫰쨌蹂듭뒿">0</span>
+      </div>
+      <div class="nav-item" data-cat="?꾨줈?앺듃" onclick="filterCategory('?꾨줈?앺듃')">
+        <span class="nav-icon">?렓</span> ?꾨줈?앺듃 ?쒕룞 <span class="nav-count" id="count-?꾨줈?앺듃">0</span>
+      </div>
+      <div class="nav-item" data-cat="?숆툒?꾧뎄" onclick="filterCategory('?숆툒?꾧뎄')">
+        <span class="nav-icon">?렡</span> ?숆툒?꾧뎄 <span class="nav-count" id="count-?숆툒?꾧뎄">0</span>
+      </div>
+    </div>
+
+    <div class="sidebar-section" id="teacher-section" style="display:none;">
+      <div class="sidebar-label">援먯궗 愿由?/div>
+      <div class="nav-item" onclick="alert('???깅줉 湲곕뒫? 以鍮?以묒엯?덈떎.')">
+        <span class="nav-icon">??/span> ???깅줉
+      </div>
+      <div class="nav-item" onclick="alert('?섏뾽??吏??湲곕뒫? 以鍮?以묒엯?덈떎.')">
+        <span class="nav-icon">?뱦</span> ?ㅻ뒛 ?섏뾽??吏??      </div>
+    </div>
+  </nav>
+
+  <!-- CONTENT -->
+  <main id="content">
+
+    <!-- Hero -->
+    <div class="hero-banner">
+      <div class="hero-inner">
+        <h2>?덈뀞?섏꽭?? ?ㅻ뒛???④퍡 諛곗썙蹂쇨퉴?? ?럦</h2>
+        <p>肄붾뵫, ?멸났吏?? ?붿????ㅻ━ ???ㅼ뼇???숈뒿 ?깆씠 ?щ윭遺꾩쓣 湲곕떎由쎈땲??<br>
+        移대뱶瑜??대┃??誘몃━蹂닿린瑜??뺤씤?섍퀬, ?ㅽ뻾?섍린 踰꾪듉???뚮윭 ?쒖옉?섏꽭??</p>
+        <div class="hero-emoji">?뱴</div>
+      </div>
+    </div>
+
+    <!-- Today's App section -->
+    <div class="section" id="section-today">
+      <div class="section-header">
+        <h2 class="section-title"><span class="dot"></span> 狩??ㅻ뒛???섏뾽??/h2>
+        <span class="section-hint">?몘 ?좎깮?섏씠 ?ㅻ뒛 ?ъ슜???깆쓣 吏?뺥뻽?댁슂</span>
+      </div>
+      <div class="card-strip" id="strip-today"></div>
+    </div>
+
+    <!-- All Apps section -->
+    <div class="section" id="section-apps">
+      <div class="section-header">
+        <h2 class="section-title" id="section-apps-title"><span class="dot"></span> ?꾩껜 ??/h2>
+        <span class="section-hint">?????ㅽ겕濡ㅽ븯硫??먯깋?섏꽭??/span>
+      </div>
+      <div class="card-strip" id="strip-apps"></div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+     APP PREVIEW MODAL
+?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧 -->
+<div class="modal-overlay" id="preview-overlay" onclick="closePreview(event)" role="dialog" aria-modal="true" aria-labelledby="modal-app-title">
+  <div class="modal-box" id="preview-box">
+    <div class="modal-thumb" id="modal-thumb">
+      <button class="modal-close-btn" onclick="closePreviewDirect()" aria-label="?リ린">??/button>
+    </div>
+    <div class="modal-content">
+      <div class="modal-meta" id="modal-meta"></div>
+      <h2 class="modal-title" id="modal-app-title"></h2>
+      <p class="modal-desc" id="modal-desc"></p>
+      <div class="modal-section-title">?뱦 ?숈뒿 紐⑺몴</div>
+      <div class="modal-goals" id="modal-goals"></div>
+      <div class="modal-info-row" id="modal-info-row"></div>
+      <div class="modal-actions">
+        <button class="btn-run" id="btn-run" onclick="runApp()">?? ?ㅽ뻾?섍린</button>
+        <button class="btn-close" onclick="closePreviewDirect()">?リ린</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+     ?댁슜?쎄? MODAL
+?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧 -->
+<div class="legal-overlay" id="terms-overlay" onclick="closeLegal('terms-overlay', event)" role="dialog" aria-modal="true" aria-labelledby="terms-title">
+  <div class="legal-box">
+    <div class="legal-header">
+      <h2 id="terms-title">?뱞 ?댁슜?쎄?</h2>
+      <button class="legal-close" onclick="closeLegalDirect('terms-overlay')" aria-label="?リ린">??/button>
+    </div>
+    <div class="legal-scroll">
+      <h3>??議?(紐⑹쟻)</h3>
+      <p>???쎄?? 李쎌씪以묓븰援?AI ?숈뒿 ?뱀빋 ?ы꽭(?댄븯 '蹂??쒕퉬??)???쒓났?섎뒗 臾대즺 援먯쑁?????좏뵆由ъ??댁뀡 ?쒕퉬?ㅻ? ?댁슜?⑥뿉 ?덉뼱 ?쒕퉬???쒓났?먯? ?댁슜?먯쓽 沅뚮━쨌?섎Т 諛?梨낆엫?ы빆??洹쒖젙?⑥쓣 紐⑹쟻?쇰줈 ?⑸땲??</p>
+
+      <h3>??議?(?뺤쓽)</h3>
+      <ul>
+        <li>'?쒕퉬??? 蹂??뚮옯?쇱뿉???쒓났?섎뒗 援먯쑁?????좏뵆由ъ??댁뀡 ?ы꽭??留먰빀?덈떎.</li>
+        <li>'?댁슜??? 蹂??쒕퉬?ㅼ뿉 ?묒냽?섏뿬 ???쎄????곕씪 ?쒕퉬?ㅻ? ?댁슜?섎뒗 紐⑤뱺 ?ъ슜???숈깮, 援먯궗)瑜?留먰빀?덈떎. 蹂??쒕퉬?ㅻ뒗 蹂꾨룄???뚯썝媛?낆쓣 ?붽뎄?섏? ?딆뒿?덈떎.</li>
+      </ul>
+
+      <h3>??議?(?쎄???紐낆떆? 媛쒖젙)</h3>
+      <p>??蹂??쒕퉬?ㅻ뒗 ???쎄????댁슜???댁슜?먭? ?쎄쾶 ?????덈룄濡??쒕퉬???댁뿉 寃뚯떆?⑸땲??<br>
+      ??蹂??쒕퉬?ㅻ뒗 愿??踰뺣졊???꾨같?섏? ?딅뒗 踰붿쐞?먯꽌 ???쎄???媛쒖젙?????덉뒿?덈떎.<br>
+      ???쎄???媛쒖젙??寃쎌슦?먮뒗 ?곸슜?쇱옄 諛?媛쒖젙?ъ쑀瑜?紐낆떆?섏뿬 ?꾪뻾?쎄?怨??④퍡 ?쒕퉬???댁뿉 怨듭??⑸땲??</p>
+
+      <h3>??議?(?쒕퉬?ㅼ쓽 ?쒓났)</h3>
+      <ul>
+        <li>蹂??쒕퉬?ㅻ뒗 援먯쑁 紐⑹쟻??臾대즺 ???좏뵆由ъ??댁뀡 ?ы꽭???쒓났?⑸땲??</li>
+        <li>?쒕퉬?ㅼ쓽 ?댁슜? 臾대즺?대ŉ, 蹂꾨룄???좊즺 寃곗젣媛 ?꾩슂?섏? ?딆뒿?덈떎.</li>
+        <li>蹂??쒕퉬?ㅻ뒗 援먯쑁 ?쒕룞 吏?먯쓣 紐⑹쟻?쇰줈 ?섎ŉ, ?곸뾽??紐⑹쟻?쇰줈 ?댁쁺?섏? ?딆뒿?덈떎.</li>
+      </ul>
+
+      <h3>??議?(?쒕퉬?ㅼ쓽 以묐떒)</h3>
+      <p>??蹂??쒕퉬?ㅻ뒗 湲곌린 ?섍꼍, 釉뚮씪?곗? ?ㅻ쪟, ?듭떊 ?먯젅 ?깆쓽 ?ъ쑀媛 諛쒖깮??寃쎌슦?먮뒗 ?쒕퉬?ㅼ쓽 ?쒓났???쇱떆?곸쑝濡?以묐떒?????덉뒿?덈떎.<br>
+      ??蹂??쒕퉬?ㅻ뒗 臾대즺濡??쒓났?섎뒗 援먯쑁???쒕퉬?ㅼ씠誘濡? ?쒕퉬??以묐떒?쇰줈 ?명븳 蹂꾨룄??蹂댁긽? ?쒓났?섏? ?딆뒿?덈떎.</p>
+
+      <h3>??議?(?댁슜 議곌굔)</h3>
+      <p>???댁슜?먮뒗 ?쒕퉬?ㅼ뿉 ?묒냽?섏뿬 AI ?ㅻ━ ?듭떖媛?대뱶 ?뺤씤 踰꾪듉???대┃?⑥쑝濡쒖뜥 蹂??쎄????숈쓽?섎뒗 寃껋쑝濡?媛꾩＜?⑸땲??<br>
+      ??留?14??誘몃쭔???꾨룞???뺣낫媛 ?ы븿??寃쎌슦, ?숆탳 媛?뺥넻?좊Ц ?깆쓣 ?듯빐 蹂댄샇??踰뺤젙?由ъ씤)???숈쓽瑜?諛쏆? ???쒕퉬?ㅻ? ?댁슜?????덉뒿?덈떎.</p>
+
+      <h3>??議?(?댁슜?먯쓽 ?섎Т)</h3>
+      <p>?댁슜?먮뒗 ?ㅼ쓬 ?됱쐞瑜??섏뿬?쒕뒗 ???⑸땲??</p>
+      <ul>
+        <li>?덉쐞 ?댁슜???깅줉 ?먮뒗 ??몄쓽 ?뺣낫 ?꾩슜</li>
+        <li>?쒕퉬?ㅼ뿉 寃뚯떆???뺣낫??臾대떒 蹂寃?/li>
+        <li>?쒕퉬?ㅼ쓽 ?댁쁺??諛⑺빐?섎뒗 ?됱쐞</li>
+        <li>??몄쓽 紐낆삁瑜??먯긽?쒗궎嫄곕굹 遺덉씠?듭쓣 二쇰뒗 ?됱쐞</li>
+        <li>怨듭꽌?묒냽??諛섑븯???뺣낫瑜?寃뚯떆?섎뒗 ?됱쐞</li>
+      </ul>
+
+      <h3>??議?(??묎텒)</h3>
+      <p>??蹂??쒕퉬?ㅺ? ?묒꽦????묐Ъ???????묎텒? ?쒕퉬???쒓났?먯뿉寃?洹?랁빀?덈떎.<br>
+      ???댁슜?먮뒗 ?쒕퉬?ㅻ? ?댁슜?섏뿬 ?살? ?뺣낫瑜??쒕퉬???쒓났?먯쓽 ?ъ쟾 ?밸굺 ?놁씠 蹂듭젣, ?≪떊, 異쒗뙋, 諛고룷?섏뿬?쒕뒗 ???⑸땲??</p>
+
+      <h3>??議?(硫댁콉議고빆)</h3>
+      <p>??蹂??쒕퉬?ㅻ뒗 臾대즺濡??쒓났?섎뒗 援먯쑁???쒕퉬?ㅻ줈?? ?쒕퉬???댁슜 以?諛쒖깮?섎뒗 湲곗닠??臾몄젣???ㅻ쪟??????쒗븳??梨낆엫??吏묐땲??<br>
+      ??蹂??쒕퉬?ㅺ? ?곌껐?섎뒗 ?몃? 留곹겕???좏뵆由ъ??댁뀡???댁슜????댁꽌???대떦 ?쒓났?먭? 梨낆엫??吏묐땲??</p>
+
+      <h3>??0議?(遺꾩웳?닿껐)</h3>
+      <p>蹂??쒕퉬?ㅼ? ?댁슜??媛꾩뿉 諛쒖깮??遺꾩웳??愿?섏뿬????쒕?援?踰뺤쓣 ?곸슜?섎ŉ, ?뚯넚???쒓린?섎뒗 寃쎌슦 ?쒕퉬???쒓났?먯쓽 ?뚯옱吏瑜?愿?좏븯??踰뺤썝??愿?좊쾿?먯쑝濡??⑸땲??</p>
+
+      <div class="legal-date">遺移? ???쎄?? 2026??6??27?쇰????쒗뻾?⑸땲??</div>
+    </div>
+  </div>
+</div>
+
+<!-- ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+     媛쒖씤?뺣낫泥섎━諛⑹묠 MODAL
+?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧 -->
+<div class="legal-overlay" id="privacy-overlay" onclick="closeLegal('privacy-overlay', event)" role="dialog" aria-modal="true" aria-labelledby="privacy-title">
+  <div class="legal-box">
+    <div class="legal-header">
+      <h2 id="privacy-title">?뵏 媛쒖씤?뺣낫泥섎━諛⑹묠</h2>
+      <button class="legal-close" onclick="closeLegalDirect('privacy-overlay')" aria-label="?リ린">??/button>
+    </div>
+    <div class="legal-scroll">
+      <p>李쎌씪以묓븰援?AI ?숈뒿 ?뱀빋 ?ы꽭(?댄븯 '蹂??쒕퉬??)? 媛쒖씤?뺣낫 蹂댄샇踰???0議곗뿉 ?곕씪 ?뺣낫二쇱껜??媛쒖씤?뺣낫瑜?蹂댄샇?섍퀬 ?댁? 愿?⑦븳 怨좎땐???좎냽?섍퀬 ?먰솢?섍쾶 泥섎━?????덈룄濡??섍린 ?꾪븯???ㅼ쓬怨?媛숈씠 媛쒖씤?뺣낫 泥섎━諛⑹묠???섎┰쨌怨듦컻?⑸땲??</p>
+
+      <h3>??議?(媛쒖씤?뺣낫??泥섎━ 紐⑹쟻)</h3>
+      <p>蹂??쒕퉬?ㅻ뒗 ?ㅼ쓬??紐⑹쟻???꾪븯??媛쒖씤?뺣낫瑜?泥섎━?⑸땲?? 泥섎━?섍퀬 ?덈뒗 媛쒖씤?뺣낫???ㅼ쓬??紐⑹쟻 ?댁쇅???⑸룄濡쒕뒗 ?댁슜?섏? ?딆쑝硫? ?댁슜 紐⑹쟻??蹂寃쎈릺??寃쎌슦?먮뒗 媛쒖씤?뺣낫 蹂댄샇踰???8議곗뿉 ?곕씪 蹂꾨룄???숈쓽瑜?諛쏅뒗 ???꾩슂??議곗튂瑜??댄뻾???덉젙?낅땲??</p>
+      <ul>
+        <li><strong>援먯쑁 ?쒕룞 吏??/strong>: ?숈깮 留욎땄???숈뒿 ???쒓났 諛??섏뾽 ?쒕룞 吏??/li>
+        <li><strong>?쒕퉬???댁슜 湲곕줉 愿由?/strong>: ?ㅻ━ 媛?대뱶 ?뺤씤 ?щ? ??理쒖냼?쒖쓽 釉뚮씪?곗? 濡쒖뺄 ???/li>
+      </ul>
+
+      <h3>??議?(媛쒖씤?뺣낫??泥섎━ 諛?蹂댁쑀湲곌컙)</h3>
+      <p>??蹂??쒕퉬?ㅻ뒗 踰뺣졊???곕Ⅸ 媛쒖씤?뺣낫 蹂댁쑀쨌?댁슜湲곌컙 ?먮뒗 ?뺣낫二쇱껜濡쒕???媛쒖씤?뺣낫瑜??섏쭛 ?쒖뿉 ?숈쓽諛쏆? 媛쒖씤?뺣낫 蹂댁쑀쨌?댁슜湲곌컙 ?댁뿉??媛쒖씤?뺣낫瑜?泥섎━쨌蹂댁쑀?⑸땲??</p>
+      <ul>
+        <li><strong>蹂댁쑀 湲곌컙</strong>: ?대떦 ?숇뀈??醫낅즺 ???듬뀈 2??留? ?먮뒗 ?숈깮??議몄뾽/吏꾧툒 ?쒓퉴吏</li>
+        <li><strong>?뚭린 ?쒖젏</strong>: 蹂댁쑀 湲곌컙 醫낅즺 ??吏泥??놁씠(5???대궡) ?뚭린</li>
+      </ul>
+
+      <h3>??議?(泥섎━?섎뒗 媛쒖씤?뺣낫 ??ぉ)</h3>
+      <p>蹂??쒕퉬?ㅻ뒗 ?숈뒿 吏?먯쓣 ?꾪빐 ?꾩슂??理쒖냼?쒖쓽 媛쒖씤?뺣낫留뚯쓣 泥섎━?⑸땲??</p>
+      <ul>
+        <li><strong>?섏쭛 ??ぉ</strong>: ?ㅻ━ 媛?대뱶 ?뺤씤 ?щ?(釉뚮씪?곗? 濡쒖뺄 ?ㅽ넗由ъ?, ?앸퀎 遺덇?)</li>
+        <li><strong>?섏쭛?섏? ?딅뒗 ??ぉ</strong>: 二쇰??깅줉踰덊샇, 二쇱냼, ?꾪솕踰덊샇, ?대찓?? ?꾩씠?? 鍮꾨?踰덊샇 ??遺덊븘?뷀븳 誘쇨컧 ?뺣낫</li>
+      </ul>
+
+      <h3>??議?(留?14??誘몃쭔 ?꾨룞??媛쒖씤?뺣낫 泥섎━)</h3>
+      <p>??蹂??쒕퉬?ㅻ뒗 留?14??誘몃쭔 ?꾨룞??媛쒖씤?뺣낫瑜?泥섎━?섍린 ?꾪븯???숆린 珥??숆탳 媛?뺥넻?좊Ц(媛쒖씤?뺣낫 ?섏쭛쨌?댁슜 ?숈쓽?????듯븯??踰뺤젙?由ъ씤???숈쓽瑜?諛쏆뒿?덈떎.<br>
+      ??踰뺤젙?由ъ씤???숈쓽?섏? ?딅뒗 寃쎌슦, ?대떦 ?꾨룞? ?쒕퉬???댁슜???쒗븳?????덉뒿?덈떎.</p>
+
+      <h3>??議?(媛쒖씤?뺣낫???뚭린 ?덉감 諛?諛⑸쾿)</h3>
+      <p>??媛쒖씤?뺣낫 蹂댁쑀湲곌컙??寃쎄낵, 泥섎━紐⑹쟻 ?ъ꽦 ??媛쒖씤?뺣낫媛 遺덊븘?뷀븯寃??섏뿀???뚯뿉??吏泥??놁씠 ?대떦 媛쒖씤?뺣낫瑜??뚭린?⑸땲??<br>
+      ??<strong>?뚭린 諛⑸쾿</strong>: 蹂??쒕퉬?ㅻ뒗 蹂꾨룄???몃? ?쒕쾭瑜??ъ슜?섏? ?딄퀬 ?ъ슜?먯쓽 ??釉뚮씪?곗? 濡쒖뺄 ?ㅽ넗由ъ????곗씠?곕? ??ν빀?덈떎. 釉뚮씪?곗???罹먯떆 諛??ъ씠???곗씠?곕? ??젣?⑥쑝濡쒖뜥 湲곕줉???ъ깮?????녿룄濡??뚭린?⑸땲??</p>
+
+      <h3>??議?(媛쒖씤?뺣낫???덉쟾???뺣낫議곗튂)</h3>
+      <ul>
+        <li><strong>?곗씠??濡쒖뺄 ???/strong>: ?섏쭛???곗씠?곕뒗 ?몃? ?대씪?곕뱶???쒕쾭濡??꾩넚?섏? ?딆쑝硫? ?꾩쟻?쇰줈 ?ъ슜?먯쓽 媛쒖씤 湲곌린 ??釉뚮씪?곗? ?대??먮쭔 ??λ맗?덈떎.</li>
+        <li><strong>媛쒖씤?뺣낫 痍④툒 理쒖냼??/strong>: 媛쒖씤?뺣낫瑜?泥섎━?섎뒗 ?대떦?먮? 湲곌린瑜??ъ슜?섎뒗 援먯궗 1?몄쑝濡??쒖젙?섏뿬 ?묎렐 沅뚰븳??愿由ы빀?덈떎.</li>
+      </ul>
+
+      <h3>??議?(?뺣낫二쇱껜? 踰뺤젙?由ъ씤??沅뚮━쨌?섎Т 諛??됱궗諛⑸쾿)</h3>
+      <p>???뺣낫二쇱껜(?숈깮) 諛?踰뺤젙?由ъ씤? ?몄젣?좎? 媛쒖씤?뺣낫 ?대엺쨌?뺤젙쨌??젣쨌泥섎━?뺤? ?붽뎄 ?깆쓽 沅뚮━瑜??됱궗?????덉뒿?덈떎.<br>
+      ??沅뚮━ ?됱궗???쒕퉬????湲곕뒫???듯븯??利됱떆 媛?ν븯硫? ?먮뒗 ?대떦 援먯궗?먭쾶 援щ몢???쒕㈃?쇰줈 ?붿껌?섎㈃ 吏泥??놁씠 議곗튂?섍쿋?듬땲??</p>
+
+      <h3>??議?(媛쒖씤?뺣낫 蹂댄샇梨낆엫??</h3>
+      <ul>
+        <li><strong>?깅챸</strong>: ?댁꽌??/li>
+        <li><strong>?뚯냽</strong>: 李쎌씪以묓븰援?/li>
+        <li><strong>吏곸쐞</strong>: 援먯궗 (?뺣낫愿由ъ콉?꾩옄)</li>
+      </ul>
+
+      <h3>??議?(媛쒖씤?뺣낫 泥섎━諛⑹묠 蹂寃?</h3>
+      <p>??媛쒖씤?뺣낫 泥섎━諛⑹묠? 2026??6??27?쇰????곸슜?⑸땲??</p>
+
+      <div class="legal-date">?쒗뻾?? 2026??6??27??/div>
+    </div>
+  </div>
+</div>
+
+<!-- ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+     FOOTER
+?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧 -->
+<footer id="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="brand-name">?룶 李쎌씪以묓븰援?AI ?숈뒿 ?뱀빋 ?ы꽭</div>
+      <div class="brand-org">Changil Middle School 쨌 ?뺣낫쨌?멸났吏???섏뾽 ?듯빀 ?ы꽭</div>
+      <div class="footer-links">
+        <span class="footer-link" id="footer-terms" onclick="openLegal('terms-overlay')" tabindex="0" role="button">?댁슜?쎄?</span>
+        <span class="footer-divider">|</span>
+        <span class="footer-link" id="footer-privacy" onclick="openLegal('privacy-overlay')" tabindex="0" role="button" style="font-weight:700;">媛쒖씤?뺣낫泥섎━諛⑹묠</span>
+        <span class="footer-divider">|</span>
+        <span class="footer-link" onclick="openEthicsGuide()">?뱥 ?ㅻ━ 媛?대뱶</span>
+      </div>
+    </div>
+    <div class="footer-info">
+      <p>?뺣낫愿由ъ콉?꾩옄: ?댁꽌??援먯궗 (李쎌씪以묓븰援?</p>
+      <p>援먯쑁??鍮꾩긽?낆쟻 ?쒕퉬??쨌 臾대즺 ?쒓났</p>
+      <p>蹂??ы꽭? ?숈깮 諛?援먯궗??援먯쑁 ?쒕룞 吏?먯쓣 ?꾪빐 ?댁쁺?⑸땲??</p>
+    </div>
+  </div>
+  <div class="footer-copyright">
+    &copy; 2026 李쎌씪以묓븰援?AI ?숈뒿 ?뱀빋 ?ы꽭. All rights reserved.
+    ???쒕퉬?ㅻ뒗 援먯쑁 紐⑹쟻?쇰줈 ?쒖옉?섏뿀?쇰ŉ ?곸뾽???댁슜??湲덊빀?덈떎.
+  </div>
+</footer>
+
+<!-- ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+     JAVASCRIPT
+?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧 -->
+<script>
+/* ?? App Data ??????????????????????????????????????? */
+const APPS = [
+  /* ?ㅻ뒛???섏뾽??*/
+  {
+    id: 'ai-ethics-gate',
+    title: 'AI ?ㅻ━ ?좏깮 寃뚯엫',
+    category: '?멸났吏??,
+    grade: '?꾩껜',
+    desc: 'AI媛 ?대┛ 寃곗젙???녹?吏 ?먮떒?섍퀬 ???섍껄???좏깮?섎뒗 ?명꽣?숉떚釉?寃뚯엫?낅땲??',
+    emoji: '?뽳툘',
+    bg: 'linear-gradient(135deg, #f9f0ff, #efe2ff)',
+    tags: ['AI?ㅻ━', '?좊줎', '?좏깮寃뚯엫'],
+    goals: ['AI???섏궗寃곗젙 ?먮━瑜??댄빐?쒕떎.', '?ㅻ━???먮떒 湲곗????몄슱 ???덈떎.', '?ㅼ뼇??愿?먯뿉??AI ?쒖슜???됯??쒕떎.'],
+    time: '20遺?,
+    url: '#',
+    isToday: true,
+    isPublic: true
+  },
+  /* 肄붾뵫 */
+  {
+    id: 'entry-debug',
+    title: '?⑥닔 ?붾쾭源??ㅼ뒿',
+    category: '肄붾뵫',
+    grade: '以?',
+    desc: '?⑥닔 ?덉쓽 ?섎せ??釉붾줉??李얠븘 ?먰봽 ?숈옉???섏젙?섎뒗 ?ㅼ뒿???뱀빋?낅땲??',
+    emoji: '?맀',
+    bg: 'linear-gradient(135deg, #e8f5e9, #c8e6c9)',
+    tags: ['?⑥닔', '?뷀듃由?, '?붾쾭源?],
+    goals: ['?⑥닔????븷???댄빐?쒕떎.', '?ㅻ쪟媛 ?앷릿 釉붾줉??李얠쓣 ???덈떎.', '?섎せ??釉붾줉???섏젙?섏뿬 ?꾨줈洹몃옩???꾩꽦?????덈떎.'],
+    time: '20遺?,
+    url: '#',
+    isToday: false,
+    isPublic: true
+  },
+  {
+    id: 'algo-maze',
+    title: '?뚭퀬由ъ쬁 誘몃줈 ?덉텧',
+    category: '肄붾뵫',
+    grade: '以?',
+    desc: '?뚭퀬由ъ쬁 紐낅졊?대? ?ъ슜??罹먮┃?곕? 誘몃줈?먯꽌 ?덉텧?쒗궎???쇰━??寃뚯엫?낅땲??',
+    emoji: '??',
+    bg: 'linear-gradient(135deg, #e3f2fd, #bbdefb)',
+    tags: ['?뚭퀬由ъ쬁', '?쒖꽌??, '?쇰━'],
+    goals: ['?뚭퀬由ъ쬁???쒖꽌?濡??묒꽦?????덈떎.', '諛섎났 援ъ“瑜??댄빐?섍퀬 ?쒖슜?쒕떎.'],
+    time: '15遺?,
+    url: '#',
+    isToday: false,
+    isPublic: true
+  },
+  {
+    id: 'condition-game',
+    title: '議곌굔臾??좏깮 寃뚯엫',
+    category: '肄붾뵫',
+    grade: '以?',
+    desc: '議곌굔???곕씪 ?ㅻⅨ 寃곌낵媛 ?섏삤??寃뚯엫?쇰줈 if-else 媛쒕뀗???듯옓?덈떎.',
+    emoji: '??',
+    bg: 'linear-gradient(135deg, #fff8e1, #fff3c4)',
+    tags: ['議곌굔臾?, 'if-else', '?꾨줈洹몃옒諛?],
+    goals: ['議곌굔臾몄쓽 援ъ“瑜??댄빐?쒕떎.', '?ㅼ뼇??議곌굔???ㅺ퀎?????덈떎.'],
+    time: '15遺?,
+    url: '#',
+    isToday: false,
+    isPublic: true
+  },
+  /* ?멸났吏??*/
+  {
+    id: 'ai-image',
+    title: 'AI ?대?吏 遺꾨쪟 泥댄뿕',
+    category: '?멸났吏??,
+    grade: '?꾩껜',
+    desc: '?곗쿂釉?癒몄떊???쒖슜??吏곸젒 AI 紐⑤뜽???숈뒿?쒗궎怨??대?吏瑜?遺꾨쪟?대킄??',
+    emoji: '?뼹截?,
+    bg: 'linear-gradient(135deg, #fce4ec, #f8bbd0)',
+    tags: ['?곗쿂釉붾㉧??, '癒몄떊?щ떇', '遺꾨쪟'],
+    goals: ['癒몄떊?щ떇???숈뒿 ?먮━瑜??댄빐?쒕떎.', '吏곸젒 AI 紐⑤뜽???숈뒿?쒗궗 ???덈떎.'],
+    time: '25遺?,
+    url: 'https://teachablemachine.withgoogle.com/',
+    isToday: false,
+    isPublic: true
+  },
+  {
+    id: 'ai-text',
+    title: 'AI ?띿뒪??遺꾨쪟 泥댄뿕',
+    category: '?멸났吏??,
+    grade: '?꾩껜',
+    desc: '?볤??대굹 臾몄옣??湲띿젙/遺?뺤쑝濡?遺꾨쪟?섎뒗 AI 紐⑤뜽??吏곸젒 留뚮뱾?대킄??',
+    emoji: '?뮠',
+    bg: 'linear-gradient(135deg, #e8eaf6, #c5cae9)',
+    tags: ['?먯뿰?댁쿂由?, 'AI', '媛먯젙遺꾩꽍'],
+    goals: ['?먯뿰?댁쿂由?媛쒕뀗???댄빐?쒕떎.', '?띿뒪???곗씠??遺꾨쪟 ?먮━瑜??듯엺??'],
+    time: '20遺?,
+    url: '#',
+    isToday: false,
+    isPublic: true
+  },
+  /* ?붿????ㅻ━ */
+  {
+    id: 'cyber-safety',
+    title: '?ъ씠踰꾪룺???덈갑 ?쒕룞',
+    category: '?붿????ㅻ━',
+    grade: '?꾩껜',
+    desc: '?⑤씪???곹솴 ?쒕??덉씠?섏쓣 ?듯빐 ?ъ씠踰꾪룺?μ쓣 ?덈갑?섎뒗 諛⑸쾿??諛곗썙??',
+    emoji: '?썳截?,
+    bg: 'linear-gradient(135deg, #e0f7fa, #b2ebf2)',
+    tags: ['?ъ씠踰꾪룺??, '?덈갑', '?붿??몄떆誘?],
+    goals: ['?ъ씠踰꾪룺?μ쓽 ?좏삎??援щ텇?????덈떎.', '?щ컮瑜??붿????섏궗?뚰넻 諛⑸쾿???ㅼ쿇?쒕떎.'],
+    time: '20遺?,
+    url: '#',
+    isToday: false,
+    isPublic: true
+  },
+  {
+    id: 'privacy-quiz',
+    title: '媛쒖씤?뺣낫 蹂댄샇 ?댁쫰',
+    category: '?붿????ㅻ━',
+    grade: '?꾩껜',
+    desc: '媛쒖씤?뺣낫 愿???곹솴???먮떒?섍퀬 ?щ컮瑜?蹂댄샇 諛⑸쾿???뚯븘蹂대뒗 ?댁쫰?낅땲??',
+    emoji: '?뵍',
+    bg: 'linear-gradient(135deg, #f3e5f5, #e1bee7)',
+    tags: ['媛쒖씤?뺣낫', '?댁쫰', '蹂댁븞'],
+    goals: ['媛쒖씤?뺣낫??醫낅쪟瑜??뚯븙?쒕떎.', '媛쒖씤?뺣낫 蹂댄샇 諛⑸쾿???ㅼ쿇?????덈떎.'],
+    time: '15遺?,
+    url: '#',
+    isToday: false,
+    isPublic: true
+  },
+  /* ?댁쫰쨌蹂듭뒿 */
+  {
+    id: 'random-quiz',
+    title: '媛쒕뀗 ?쒕뜡 ?댁쫰',
+    category: '?댁쫰쨌蹂듭뒿',
+    grade: '?꾩껜',
+    desc: '?⑥썝蹂??듭떖 媛쒕뀗???쒕뜡?쇰줈 異쒖젣?섏뿬 鍮좊Ⅴ寃?蹂듭뒿?????덈뒗 ?댁쫰?깆엯?덈떎.',
+    emoji: '?렞',
+    bg: 'linear-gradient(135deg, #fff8e1, #ffecb3)',
+    tags: ['蹂듭뒿', '媛쒕뀗', '?댁쫰'],
+    goals: ['?⑥썝蹂??듭떖 媛쒕뀗???뺣━?????덈떎.', '?먭린 ?숈뒿 ?섏????먭??쒕떎.'],
+    time: '10遺?,
+    url: '#',
+    isToday: false,
+    isPublic: true
+  },
+  {
+    id: 'flashcard',
+    title: '?붽린 移대뱶 ?숈뒿',
+    category: '?댁쫰쨌蹂듭뒿',
+    grade: '?꾩껜',
+    desc: '?욌㈃???⑹뼱, ?룸㈃???ㅻ챸???닿릿 移대뱶瑜??ㅼ쭛?쇰ŉ 媛쒕뀗???듯???',
+    emoji: '?깗',
+    bg: 'linear-gradient(135deg, #e8f5e9, #c8e6c9)',
+    tags: ['?붽린', '?뚮옒?쒖뭅??, '媛쒕뀗'],
+    goals: ['?듭떖 ?⑹뼱? 媛쒕뀗???붽린?????덈떎.'],
+    time: '15遺?,
+    url: '#',
+    isToday: false,
+    isPublic: true
+  },
+  /* ?꾨줈?앺듃 */
+  {
+    id: 'card-news',
+    title: '移대뱶?댁뒪 ?쒖옉 ?꾩슦誘?,
+    category: '?꾨줈?앺듃',
+    grade: '?꾩껜',
+    desc: '二쇱젣瑜??좎젙?섍퀬 移대뱶?댁뒪 ?뺤떇?쇰줈 ?뺣낫瑜??뺣━?섍퀬 ?쒖옉?섎뒗 ?쒕룞?낅땲??',
+    emoji: '?벐',
+    bg: 'linear-gradient(135deg, #fce4ec, #f8bbd0)',
+    tags: ['移대뱶?댁뒪', '湲?곌린', '?붿옄??],
+    goals: ['?뺣낫瑜??④낵?곸쑝濡?援ъ“?뷀븷 ???덈떎.', '移대뱶?댁뒪 ?뺤떇?쇰줈 硫붿떆吏瑜??꾨떖?쒕떎.'],
+    time: '30遺?,
+    url: '#',
+    isToday: false,
+    isPublic: true
+  },
+  {
+    id: 'group-roles',
+    title: '紐⑤몺 ??븷 ?섎늻湲?,
+    category: '?꾨줈?앺듃',
+    grade: '?꾩껜',
+    desc: '?꾨줈?앺듃 紐⑤몺????븷??怨듭젙?섍쾶 ?섎늻怨?媛쒖씤 紐⑺몴瑜??ㅼ젙?섎뒗 ?쒕룞?낅땲??',
+    emoji: '?뫁',
+    bg: 'linear-gradient(135deg, #e8eaf6, #c5cae9)',
+    tags: ['?묐룞?숈뒿', '??븷遺꾨떞', '紐⑤몺'],
+    goals: ['???媛???븷??紐낇솗???뺥븷 ???덈떎.', '?묒뾽??以묒슂?깆쓣 ?몄떇?쒕떎.'],
+    time: '15遺?,
+    url: '#',
+    isToday: false,
+    isPublic: true
+  },
+  /* ?숆툒?꾧뎄 */
+  {
+    id: 'random-presenter',
+    title: '諛쒗몴???쒕뜡 戮묎린',
+    category: '?숆툒?꾧뎄',
+    grade: '?꾩껜',
+    desc: '?숆툒 紐낅떒?먯꽌 諛쒗몴?먮? 臾댁옉?꾨줈 異붿꺼?섎뒗 援먯궗???꾧뎄?낅땲??',
+    emoji: '?렡',
+    bg: 'linear-gradient(135deg, #fff3e0, #ffe0b2)',
+    tags: ['戮묎린', '諛쒗몴', '臾댁옉??],
+    goals: ['怨듭젙??諛쒗몴???좎젙???꾩?以??'],
+    time: '利됱떆',
+    url: '#',
+    isToday: false,
+    isPublic: true
+  },
+  {
+    id: 'timer',
+    title: '?섏뾽 ??대㉧',
+    category: '?숆툒?꾧뎄',
+    grade: '?꾩껜',
+    desc: '?쒕룞蹂??쒓컙???ㅼ젙?섍퀬 ?쒓컖?곸쑝濡??쒖떆?섎뒗 ?섏뾽????대㉧?낅땲??',
+    emoji: '?깍툘',
+    bg: 'linear-gradient(135deg, #e0f7fa, #b2ebf2)',
+    tags: ['??대㉧', '?쒓컙愿由?, '?섏뾽'],
+    goals: ['?뺥빐吏??쒓컙 ?덉뿉 ?쒕룞???꾨즺?쒕떎.'],
+    time: '利됱떆',
+    url: '#',
+    isToday: false,
+    isPublic: true
+  }
+];
+
+/* ?? State ?????????????????????????????????????????? */
+let currentCategory = '?꾩껜??;
+let currentApp = null;
+let isTeacherMode = false;
+let searchQuery = '';
+
+/* ?? Ethics Gate ???????????????????????????????????? */
+function checkEthicsGate() {
+  const agreed = localStorage.getItem('ethics_agreed');
+  if (!agreed) {
+    document.getElementById('ethics-overlay').classList.remove('hidden');
+  }
+}
+
+function enterPortal() {
+  localStorage.setItem('ethics_agreed', 'true');
+  const overlay = document.getElementById('ethics-overlay');
+  overlay.style.animation = 'fadeIn .3s ease reverse forwards';
+  setTimeout(() => overlay.classList.add('hidden'), 300);
+}
+
+function openEthicsGuide() {
+  const overlay = document.getElementById('ethics-overlay');
+  overlay.classList.remove('hidden');
+  overlay.style.animation = 'fadeIn .3s ease';
+}
+
+/* ?? Teacher Mode ??????????????????????????????????? */
+function toggleTeacherMode() {
+  isTeacherMode = !isTeacherMode;
+  const btn = document.getElementById('btn-teacher-toggle');
+  const sec = document.getElementById('teacher-section');
+  if (isTeacherMode) {
+    btn.textContent = '?럳 ?숈깮 蹂닿린';
+    btn.style.background = 'linear-gradient(135deg, #66bb6a, #43a047)';
+    btn.style.color = '#fff';
+    sec.style.display = 'block';
+  } else {
+    btn.textContent = '?뫆?랅윆?援먯궗 蹂닿린';
+    btn.style.background = '';
+    btn.style.color = '';
+    sec.style.display = 'none';
+  }
+}
+
+/* ?? Category Filter ???????????????????????????????? */
+function filterCategory(cat) {
+  currentCategory = cat;
+  searchQuery = '';
+  document.getElementById('search-input').value = '';
+
+  document.querySelectorAll('.nav-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.cat === cat);
+  });
+
+  renderApps();
+
+  const title = document.getElementById('section-apps-title');
+  title.innerHTML = `<span class="dot"></span> ${cat === '?꾩껜?? ? '?꾩껜 ?? : cat}`;
+}
+
+/* ?? Search ????????????????????????????????????????? */
+function handleSearch(query) {
+  searchQuery = query.trim().toLowerCase();
+  renderApps();
+}
+
+/* ?? Render ????????????????????????????????????????? */
+function updateCounts() {
+  const cats = ['肄붾뵫', '?멸났吏??, '?붿????ㅻ━', '?댁쫰쨌蹂듭뒿', '?꾨줈?앺듃', '?숆툒?꾧뎄'];
+  document.getElementById('count-all').textContent = APPS.filter(a => a.isPublic).length;
+  cats.forEach(c => {
+    const el = document.getElementById('count-' + c);
+    if (el) el.textContent = APPS.filter(a => a.category === c && a.isPublic).length;
+  });
+}
+
+function matchesSearch(app) {
+  if (!searchQuery) return true;
+  const hay = [app.title, app.category, app.grade, app.desc, ...(app.tags || [])].join(' ').toLowerCase();
+  return hay.includes(searchQuery);
+}
+
+function renderApps() {
+  const todayStrip  = document.getElementById('strip-today');
+  const appsStrip   = document.getElementById('strip-apps');
+  const todaySec    = document.getElementById('section-today');
+
+  // Today strip
+  const todayApps = APPS.filter(a => a.isToday && a.isPublic && matchesSearch(a));
+  todaySec.style.display = todayApps.length ? 'block' : 'none';
+  todayStrip.innerHTML = todayApps.map(app => renderTodayCard(app)).join('');
+
+  // Main strip
+  let filtered = APPS.filter(a => {
+    if (!a.isPublic) return false;
+    if (!matchesSearch(a)) return false;
+    if (currentCategory === '?꾩껜??) return true;
+    if (currentCategory === '?ㅻ뒛???섏뾽??) return a.isToday;
+    return a.category === currentCategory;
+  });
+
+  if (filtered.length === 0) {
+    appsStrip.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">?뵇</div>
+        <p>寃??寃곌낵媛 ?놁뒿?덈떎.<br>?ㅻⅨ ?ㅼ썙?쒕줈 寃?됲빐 蹂댁꽭??</p>
+      </div>`;
+  } else {
+    appsStrip.innerHTML = filtered.map(app => renderCard(app)).join('');
+  }
+}
+
+function renderCard(app) {
+  return `
+    <div class="app-card" id="card-${app.id}" onclick="openPreview('${app.id}')" tabindex="0" role="button" aria-label="${app.title} 誘몃━蹂닿린">
+      <div class="card-thumb" style="background:${app.bg}">${app.emoji}</div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="cat-badge">${app.category}</span>
+          <span class="grade-badge">${app.grade}</span>
+          ${app.isToday ? '<span class="status-badge">?ㅻ뒛 ?ъ슜</span>' : ''}
+        </div>
+        <div class="card-title">${app.title}</div>
+        <div class="card-desc">${app.desc}</div>
+        <div class="card-tags">
+          ${(app.tags||[]).map(t=>`<span class="tag">#${t}</span>`).join('')}
+        </div>
+        <button class="btn-preview" onclick="event.stopPropagation(); openPreview('${app.id}')">誘몃━蹂닿린</button>
+      </div>
+    </div>`;
+}
+
+function renderTodayCard(app) {
+  return `
+    <div class="today-card" id="today-card-${app.id}" onclick="openPreview('${app.id}')" tabindex="0" role="button" aria-label="${app.title} ?ㅻ뒛???섏뾽??>
+      <div class="card-thumb" style="background: rgba(255,255,255,.12)">${app.emoji}</div>
+      <div class="card-body">
+        <div class="card-label">狩??ㅻ뒛???섏뾽??/div>
+        <div class="card-title">${app.title}</div>
+        <div class="card-desc">${app.desc}</div>
+        <button class="btn-enter" onclick="event.stopPropagation(); openPreview('${app.id}')">?? ?쒖옉?섍린</button>
+      </div>
+    </div>`;
+}
+
+/* ?? App Preview Modal ?????????????????????????????? */
+function openPreview(appId) {
+  const app = APPS.find(a => a.id === appId);
+  if (!app) return;
+  currentApp = app;
+
+  document.getElementById('modal-thumb').style.background = app.bg;
+  document.getElementById('modal-thumb').childNodes[0].style.cssText = `
+    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    font-size:80px;`;
+  // Re-render thumb content
+  const thumb = document.getElementById('modal-thumb');
+  thumb.style.background = app.bg;
+  thumb.innerHTML = `
+    <span style="font-size:80px;">${app.emoji}</span>
+    <button class="modal-close-btn" onclick="closePreviewDirect()" aria-label="?リ린">??/button>
+  `;
+
+  document.getElementById('modal-meta').innerHTML = `
+    <span class="cat-badge">${app.category}</span>
+    <span class="grade-badge" style="border:1px solid #e0e0e0;padding:2px 9px;border-radius:90px;font-size:10px;">${app.grade}</span>
+    <span style="font-size:10px;color:#9b9b9b;padding:2px 9px;">??${app.time}</span>
+  `;
+  document.getElementById('modal-app-title').textContent = app.title;
+  document.getElementById('modal-desc').textContent = app.desc;
+  document.getElementById('modal-goals').innerHTML =
+    (app.goals||[]).map(g=>`<div class="modal-goal-item">${g}</div>`).join('');
+  document.getElementById('modal-info-row').innerHTML = `
+    <span class="modal-info-chip"><span class="chip-icon">?뱛</span> ${app.category}</span>
+    <span class="modal-info-chip"><span class="chip-icon">?럳</span> ${app.grade}</span>
+    <span class="modal-info-chip"><span class="chip-icon">??/span> ${app.time}</span>
+  `;
+
+  document.getElementById('preview-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePreview(e) {
+  if (e.target === document.getElementById('preview-overlay')) closePreviewDirect();
+}
+function closePreviewDirect() {
+  document.getElementById('preview-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+  currentApp = null;
+}
+
+function runApp() {
+  if (!currentApp) return;
+  if (currentApp.url && currentApp.url !== '#') {
+    window.open(currentApp.url, '_blank', 'noopener');
+  } else {
+    alert(`"${currentApp.title}" ?깆? ?꾩옱 以鍮?以묒엯?덈떎.\n怨??낅뜲?댄듃???덉젙?댁뿉?? ??`);
+  }
+}
+
+/* ?? Legal Modals ??????????????????????????????????? */
+function openLegal(overlayId) {
+  document.getElementById(overlayId).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLegal(overlayId, e) {
+  if (e.target === document.getElementById(overlayId)) closeLegalDirect(overlayId);
+}
+function closeLegalDirect(overlayId) {
+  document.getElementById(overlayId).classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ?? Keyboard accessibility ????????????????????????? */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closePreviewDirect();
+    closeLegalDirect('terms-overlay');
+    closeLegalDirect('privacy-overlay');
+  }
+});
+
+/* ?? Footer link keyboard support ?????????????????? */
+document.querySelectorAll('.footer-link[tabindex="0"]').forEach(el => {
+  el.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.click(); }
+  });
+});
+
+/* ?? Init ??????????????????????????????????????????? */
+document.addEventListener('DOMContentLoaded', () => {
+  updateCounts();
+  renderApps();
+  checkEthicsGate();
+});
+</script>
+</body>
+</html>
