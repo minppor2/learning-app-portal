@@ -1,0 +1,28 @@
+# 개인정보 및 민감 정보
+*.env
+.env.local
+.env.production
+
+# Firebase
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+
+# Node (향후 확장 시)
+node_modules/
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/settings.json
+.idea/
+
+# Build output (향후)
+dist/
+build/
+.output/
