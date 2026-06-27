@@ -3,524 +3,1892 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Learning App Portal</title>
+  <title>창일중 AI 학습 웹앱 포털 | 선생님의 학습방</title>
+  <meta name="description" content="창일중학교 정보·인공지능 수업을 위한 학습용 웹앱 통합 포털. 코딩, 인공지능, 디지털 윤리, 퀴즈 등 다양한 학습 앱을 한곳에서 탐색하고 실행하세요." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
   <style>
-    /* ─── Slacc Design Tokens ─────────────────────────────── */
+    /* ─── Design Tokens ─────────────────────────────── */
     :root {
       --primary:        #4a154b;
-      --primary-deep:   #481a54;
       --primary-press:  #611f69;
-      --primary-tint:   #592466;
-      --on-primary:     #ffffff;
-      
-      --ink:            #1d1d1d;
-      --ink-mute:       #696969;
-      --link-blue:      #1264a3;
-      --link-hover:     #3860be;
-      
+      --primary-tint:   #7b2d8b;
+      --primary-light:  #f9f0ff;
+      --cream:          #f4ede4;
+      --lavender:       #f9f0ff;
+      --lavender-mid:   #efe2ff;
       --canvas:         #ffffff;
-      --canvas-cream:   #f4ede4;
-      --canvas-lavender:#f9f0ff;
-      --hairline:       #e6e6e6;
-      --semantic-error: #cc4117;
-
-      --radius-sm:      4px;
-      --radius-md:      8px;
-      --radius-lg:      12px;
-      --radius-xl:      16px;
+      --ink:            #1d1d1d;
+      --ink-muted:      #696969;
+      --ink-faint:      #9b9b9b;
+      --border:         #e6e6e6;
+      --link:           #1264a3;
+      --shadow-sm:      0 2px 8px rgba(0,0,0,.08);
+      --shadow-md:      0 8px 32px rgba(74,21,75,.14);
+      --shadow-lg:      0 20px 60px rgba(74,21,75,.22);
+      --radius-card:    16px;
       --radius-pill:    90px;
+      --radius-modal:   20px;
+      --transition:     .25s cubic-bezier(.4,0,.2,1);
 
-      --transition:     .2s ease-in-out;
-
-      /* Pastel mesh gradient (hero depth) */
+      /* Pastel mesh gradient */
       --mesh-bg: radial-gradient(circle at 10% 20%, #f4ede4 0, transparent 35%),
                  radial-gradient(circle at 80% 10%, #f9f0ff 0, transparent 30%),
                  radial-gradient(circle at 50% 80%, #efe2ff 0, transparent 35%),
                  #ffffff;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    /* ─── Reset ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'Noto Sans KR', 'Inter', sans-serif;
       color: var(--ink);
-      background: var(--canvas);
+      background: var(--cream);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      overflow-x: hidden;
     }
     button { cursor: pointer; border: none; font-family: inherit; }
-    a { color: var(--link-blue); text-decoration: none; }
-    a:hover { color: var(--link-hover); text-decoration: underline; }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; }
 
-    /* ─── Typography (Display & Body) ───────────────── */
-    h1, h2, h3 { font-weight: 700; color: var(--ink); }
-    .display-md { font-size: 32px; line-height: 1.25; letter-spacing: -0.256px; }
-    .heading-lg { font-size: 24px; line-height: 1.33; letter-spacing: -0.096px; }
-    .heading-md { font-size: 22px; font-weight: 600; line-height: 1.4; }
-    .heading-sm { font-size: 18px; font-weight: 600; line-height: 1.56; letter-spacing: -0.0216px; }
-    .body-lg    { font-size: 18px; line-height: 1.55; letter-spacing: -0.0216px; }
-    .body-md    { font-size: 16px; line-height: 1.55; }
-    .caption    { font-size: 14px; line-height: 1.43; letter-spacing: 0.1px; color: var(--ink-mute); }
-    .micro-cap  { font-size: 12px; font-weight: 700; line-height: 1; letter-spacing: 0.96px; text-transform: uppercase; }
+    /* ─── Scrollbar ──────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #d4b8e0; border-radius: 10px; }
 
-    /* ─── Buttons ───────────────────────────────────── */
-    .btn {
-      display: inline-flex; align-items: center; justify-content: center;
-      border-radius: var(--radius-pill);
-      font-size: 16px; font-weight: 700; line-height: 1.38; letter-spacing: 0.2px;
-      padding: 14px 28px; /* generous padding */
-      transition: background var(--transition), transform var(--transition);
+    /* ═══════════════════════════════════════════════════
+       ETHICS GATE MODAL
+    ═══════════════════════════════════════════════════ */
+    #ethics-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(15, 5, 20, .82);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      animation: fadeIn .4s ease;
     }
-    .btn-primary { background: var(--primary); color: var(--on-primary); }
-    .btn-primary:hover { background: var(--primary-press); }
-    .btn-secondary { background: var(--canvas-lavender); color: var(--ink); padding: 10px 30px; }
-    .btn-secondary:hover { background: #efe2ff; }
-    .btn-outline { background: var(--canvas); color: var(--primary); border: 2px solid var(--primary); }
-    .btn-outline:hover { background: var(--canvas-cream); }
-    .btn-cap { font-size: 14px; padding: 10px 20px; }
+    #ethics-overlay.hidden { display: none; }
 
-    /* ─── Inputs ────────────────────────────────────── */
-    .text-input {
-      background: var(--canvas); color: var(--ink);
-      font-family: inherit; font-size: 16px;
-      padding: 10px 12px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--hairline);
-      outline: none;
+    #ethics-modal {
+      background: #fff;
+      border-radius: var(--radius-modal);
+      max-width: 760px;
       width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      animation: slideUp .4s cubic-bezier(.34,1.4,.64,1);
     }
-    .text-input:focus { border-color: var(--primary); }
 
-    /* ─── Header ────────────────────────────────────── */
-    header {
+    .ethics-header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-tint) 60%, #9b3db8 100%);
+      padding: 32px 36px 28px;
+      border-radius: var(--radius-modal) var(--radius-modal) 0 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .ethics-header::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at 80% 20%, rgba(255,255,255,.12) 0, transparent 50%);
+      pointer-events: none;
+    }
+    .ethics-header .badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,.18);
+      color: #fff;
+      font-size: 12px; font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 90px;
+      letter-spacing: .5px;
+      margin-bottom: 12px;
+    }
+    .ethics-header h1 {
+      color: #fff;
+      font-size: clamp(18px, 4vw, 26px);
+      font-weight: 900;
+      line-height: 1.3;
+      margin-bottom: 8px;
+    }
+    .ethics-header p {
+      color: rgba(255,255,255,.8);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .ethics-icon-hero {
+      position: absolute; right: 28px; bottom: -8px;
+      font-size: 72px; opacity: .18;
+      transform: rotate(-8deg);
+      pointer-events: none;
+    }
+
+    .ethics-body {
+      padding: 28px 36px;
+    }
+    .ethics-intro {
+      background: var(--lavender);
+      border-left: 4px solid var(--primary);
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      font-size: 14px;
+      color: var(--ink-muted);
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+
+    .guide-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    @media (max-width: 600px) {
+      .guide-grid { grid-template-columns: 1fr; }
+      .ethics-body { padding: 20px 20px; }
+      .ethics-header { padding: 24px 20px 20px; }
+    }
+
+    .guide-card {
       background: var(--canvas);
-      padding: 16px 24px;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      transition: border-color var(--transition), box-shadow var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .guide-card:hover {
+      border-color: var(--primary-tint);
+      box-shadow: 0 4px 16px rgba(74,21,75,.12);
+    }
+    .guide-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0;
+      width: 4px; height: 100%;
+    }
+    .guide-card.primary-hue::before   { background: linear-gradient(180deg, #f5a623, #f7b731); }
+    .guide-card.orange-hue::before    { background: linear-gradient(180deg, #ff7043, #ff5722); }
+    .guide-card.green-hue::before     { background: linear-gradient(180deg, #66bb6a, #43a047); }
+    .guide-card.teal-hue::before      { background: linear-gradient(180deg, #26c6da, #00acc1); }
+    .guide-card.blue-hue::before      { background: linear-gradient(180deg, #5c6bc0, #3949ab); }
+    .guide-card.purple-hue::before    { background: linear-gradient(180deg, var(--primary-tint), var(--primary)); }
+
+    .guide-num-row {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 8px;
+    }
+    .guide-num {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 900; color: #fff;
+      flex-shrink: 0;
+    }
+    .guide-num.c1 { background: linear-gradient(135deg, #f5a623, #f7b731); }
+    .guide-num.c2 { background: linear-gradient(135deg, #ff7043, #ff5722); }
+    .guide-num.c3 { background: linear-gradient(135deg, #66bb6a, #43a047); }
+    .guide-num.c4 { background: linear-gradient(135deg, #26c6da, #00acc1); }
+    .guide-num.c5 { background: linear-gradient(135deg, #5c6bc0, #3949ab); }
+    .guide-num.c6 { background: linear-gradient(135deg, #9c27b0, #6a1b9a); }
+
+    .guide-label {
+      font-size: 11px; font-weight: 700;
+      color: var(--ink-muted);
+      letter-spacing: .3px;
+    }
+    .guide-value-badge {
+      display: flex; flex-wrap: wrap; gap: 4px;
+      margin-bottom: 6px;
+    }
+    .value-chip {
+      font-size: 10px; font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 90px;
+      color: var(--primary);
+      background: var(--lavender);
+    }
+    .guide-title {
+      font-size: 13.5px; font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 6px;
+      line-height: 1.4;
+    }
+    .guide-desc {
+      font-size: 12px;
+      color: var(--ink-muted);
+      line-height: 1.65;
+    }
+
+    .ethics-pledge {
+      background: linear-gradient(135deg, #f9f0ff 0%, #efe2ff 100%);
+      border: 2px dashed #c398e0;
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin-bottom: 22px;
+      display: flex; align-items: flex-start; gap: 12px;
+    }
+    .pledge-icon { font-size: 28px; flex-shrink: 0; margin-top: 2px; }
+    .pledge-text {
+      font-size: 14px; font-weight: 700;
+      color: var(--primary);
+      line-height: 1.6;
+    }
+    .pledge-text span {
+      display: block;
+      font-size: 12px; font-weight: 400;
+      color: var(--ink-muted);
+      margin-top: 4px;
+    }
+
+    .btn-ethics-enter {
+      width: 100%;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-tint) 100%);
+      color: #fff;
+      font-size: 15px; font-weight: 900;
+      padding: 18px 28px;
+      border-radius: var(--radius-pill);
+      letter-spacing: .3px;
+      transition: all var(--transition);
+      box-shadow: 0 6px 24px rgba(74,21,75,.35);
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-ethics-enter::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(255,255,255,0);
+      transition: background var(--transition);
+    }
+    .btn-ethics-enter:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 32px rgba(74,21,75,.45);
+    }
+    .btn-ethics-enter:hover::after { background: rgba(255,255,255,.08); }
+    .btn-ethics-enter:active { transform: translateY(0); }
+
+    .ethics-notice {
+      text-align: center;
+      font-size: 11.5px;
+      color: var(--ink-faint);
+      margin-top: 12px;
+      line-height: 1.6;
+    }
+    .ethics-notice a {
+      color: var(--primary);
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       HEADER
+    ═══════════════════════════════════════════════════ */
+    #header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-press) 40%, #3d0d3e 100%);
+      padding: 0 28px;
+      height: 64px;
       display: flex; align-items: center; justify-content: space-between;
-      border-bottom: 1px solid var(--hairline);
       position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 16px rgba(74,21,75,.3);
     }
-    .brand-logo { font-size: 20px; font-weight: 700; color: var(--primary); letter-spacing: -0.5px; }
-    .header-nav { display: flex; gap: 16px; align-items: center; }
-    
-    .search-bar { position: relative; width: 300px; }
-    .search-bar input { border-radius: var(--radius-pill); padding-left: 36px; }
-    .search-icon { position: absolute; left: 12px; top: 11px; color: var(--ink-mute); font-size: 14px; pointer-events: none;}
+    .header-logo {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .logo-mark {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, #f5a623, #f7b731);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      box-shadow: 0 2px 8px rgba(245,166,35,.4);
+    }
+    .logo-text {
+      color: #fff;
+      font-size: 15px; font-weight: 900;
+      letter-spacing: -.2px;
+    }
+    .logo-text span {
+      display: block;
+      font-size: 10px; font-weight: 400;
+      color: rgba(255,255,255,.65);
+      letter-spacing: .3px;
+    }
 
-    /* ─── Main Layout ───────────────────────────────── */
-    #main-container {
-      display: flex; flex: 1; overflow: hidden;
+    .header-search {
+      flex: 1; max-width: 380px;
+      margin: 0 24px;
+      position: relative;
+    }
+    .header-search input {
+      width: 100%;
+      background: rgba(255,255,255,.12);
+      border: 1.5px solid rgba(255,255,255,.2);
+      border-radius: 90px;
+      padding: 9px 16px 9px 42px;
+      color: #fff;
+      font-size: 13px;
+      font-family: inherit;
+      outline: none;
+      transition: background var(--transition), border-color var(--transition);
+    }
+    .header-search input::placeholder { color: rgba(255,255,255,.5); }
+    .header-search input:focus {
+      background: rgba(255,255,255,.2);
+      border-color: rgba(255,255,255,.5);
+    }
+    .header-search .search-icon {
+      position: absolute; left: 14px; top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255,255,255,.55);
+      pointer-events: none; font-size: 15px;
     }
 
-    /* Sidebar */
-    aside {
-      width: 240px; border-right: 1px solid var(--hairline);
-      padding: 24px 16px; background: var(--canvas);
-      overflow-y: auto; height: calc(100vh - 70px);
+    .header-actions { display: flex; align-items: center; gap: 10px; }
+    .btn-guide-again {
+      background: rgba(255,255,255,.12);
+      color: rgba(255,255,255,.85);
+      font-size: 12px; font-weight: 600;
+      padding: 7px 14px;
+      border-radius: 90px;
+      border: 1px solid rgba(255,255,255,.2);
+      transition: all var(--transition);
+      display: flex; align-items: center; gap: 5px;
     }
-    .nav-label { margin-bottom: 12px; padding: 0 12px; }
+    .btn-guide-again:hover {
+      background: rgba(255,255,255,.22);
+      color: #fff;
+    }
+    .btn-teacher {
+      background: linear-gradient(135deg, #f5a623, #f7b731);
+      color: var(--primary);
+      font-size: 12px; font-weight: 800;
+      padding: 7px 16px;
+      border-radius: 90px;
+      transition: all var(--transition);
+      box-shadow: 0 2px 8px rgba(245,166,35,.3);
+    }
+    .btn-teacher:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(245,166,35,.4); }
+
+    /* ═══════════════════════════════════════════════════
+       MAIN LAYOUT
+    ═══════════════════════════════════════════════════ */
+    #main-wrap {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ─── Sidebar ───────────────────────────────────── */
+    #sidebar {
+      width: 220px;
+      flex-shrink: 0;
+      background: #fff;
+      border-right: 1px solid var(--border);
+      padding: 20px 12px;
+      overflow-y: auto;
+      position: sticky;
+      top: 64px;
+      height: calc(100vh - 64px);
+    }
+
+    .sidebar-section { margin-bottom: 20px; }
+    .sidebar-label {
+      font-size: 10px; font-weight: 700;
+      color: var(--ink-faint);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 0 10px;
+      margin-bottom: 6px;
+    }
     .nav-item {
-      padding: 10px 12px; border-radius: var(--radius-md);
-      font-size: 16px; color: var(--ink-mute); cursor: pointer;
-      display: flex; justify-content: space-between; align-items: center;
-      transition: background 0.15s, color 0.15s;
-      margin-bottom: 4px;
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 13.5px; font-weight: 500;
+      color: var(--ink-muted);
+      cursor: pointer;
+      transition: all var(--transition);
+      margin-bottom: 2px;
     }
-    .nav-item:hover { background: var(--canvas-cream); color: var(--ink); }
-    .nav-item.active { background: var(--primary); color: var(--on-primary); font-weight: 600; }
-    
-    /* Content Area */
-    main {
-      flex: 1; overflow-y: auto; overflow-x: hidden;
+    .nav-item:hover { background: var(--lavender); color: var(--primary); }
+    .nav-item.active {
+      background: var(--primary);
+      color: #fff;
+      font-weight: 700;
+    }
+    .nav-item .nav-icon { font-size: 16px; flex-shrink: 0; }
+    .nav-item .nav-count {
+      margin-left: auto;
+      background: rgba(0,0,0,.08);
+      color: inherit;
+      font-size: 10px; font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 90px;
+    }
+    .nav-item.active .nav-count { background: rgba(255,255,255,.25); }
+
+    .today-badge {
+      display: flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, #fff8e1, #fff3c4);
+      border: 1.5px solid #f5a623;
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .today-badge:hover { box-shadow: 0 4px 12px rgba(245,166,35,.2); }
+    .today-badge .today-icon { font-size: 18px; }
+    .today-badge .today-text { font-size: 12.5px; font-weight: 700; color: #b45309; }
+    .today-badge .today-sub { font-size: 10px; color: #92400e; margin-top: 1px; }
+
+    /* ─── Content area ──────────────────────────────── */
+    #content {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
       background: var(--mesh-bg);
     }
-    
-    .hero {
-      padding: 64px 48px 48px;
-    }
-    .hero h1 { margin-bottom: 16px; }
-    .hero p { max-width: 600px; color: var(--ink-mute); }
 
-    /* ─── Card Grid ─────────────────────────────────── */
-    .section-wrapper {
-      padding: 0 48px 64px;
+    /* ─── Hero Banner ───────────────────────────────── */
+    .hero-banner {
+      padding: 32px 32px 0;
     }
-    .card-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 24px; margin-top: 24px;
+    .hero-inner {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-tint) 60%, #9b3db8 100%);
+      border-radius: 20px;
+      padding: 28px 32px;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+    }
+    .hero-inner::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,.1) 0, transparent 40%),
+        radial-gradient(circle at 10% 80%, rgba(255,255,255,.06) 0, transparent 35%);
+      pointer-events: none;
+    }
+    .hero-inner h2 {
+      font-size: clamp(18px, 3vw, 24px);
+      font-weight: 900; line-height: 1.3;
+      margin-bottom: 8px;
+    }
+    .hero-inner p { font-size: 14px; color: rgba(255,255,255,.8); line-height: 1.6; }
+    .hero-emoji { position: absolute; right: 32px; top: 50%; transform: translateY(-50%); font-size: 56px; opacity: .25; }
+
+    /* ─── Section ───────────────────────────────────── */
+    .section {
+      padding: 28px 32px;
+    }
+    .section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 18px;
+    }
+    .section-title {
+      font-size: 17px; font-weight: 800;
+      color: var(--ink);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-title .dot {
+      width: 8px; height: 8px;
+      background: var(--primary);
+      border-radius: 50%;
+    }
+    .section-hint {
+      font-size: 12px; color: var(--ink-faint);
+      display: flex; align-items: center; gap: 4px;
     }
 
+    /* ─── Card Scroll Strip ─────────────────────────── */
+    .card-strip {
+      display: flex;
+      gap: 18px;
+      overflow-x: auto;
+      padding-bottom: 16px;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: thin;
+    }
+    .card-strip::-webkit-scrollbar { height: 4px; }
+    .card-strip::-webkit-scrollbar-thumb { background: #d4b8e0; border-radius: 10px; }
+
+    /* ─── App Card ──────────────────────────────────── */
     .app-card {
+      flex: 0 0 220px;
       background: var(--canvas);
-      border: 1px solid var(--hairline);
-      border-radius: var(--radius-xl);
-      padding: 24px;
-      display: flex; flex-direction: column;
-      transition: transform var(--transition), box-shadow var(--transition);
+      border-radius: var(--radius-card);
+      border: 1.5px solid var(--border);
+      overflow: hidden;
+      scroll-snap-align: start;
       cursor: pointer;
+      transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
       position: relative;
     }
     .app-card:hover {
-      box-shadow: 0 8px 24px rgba(74,21,75,0.08);
-      transform: translateY(-2px);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+      border-color: #c398e0;
     }
-    .app-card.today-card {
-      background: var(--primary); color: var(--on-primary);
-    }
-    .app-card.today-card .heading-sm { color: var(--on-primary); }
-    .app-card.today-card .caption { color: var(--on-aubergine-mute); }
 
-    .card-eyebrow {
-      display: inline-block; padding: 4px 12px; background: var(--canvas-cream);
-      color: var(--ink); border-radius: var(--radius-pill); margin-bottom: 16px;
+    .card-thumb {
+      height: 120px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 52px;
+      position: relative;
+      overflow: hidden;
     }
-    .app-card.today-card .card-eyebrow { background: var(--primary-tint); color: var(--on-primary); }
+    .card-thumb::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 40px;
+      background: linear-gradient(to bottom, transparent, rgba(255,255,255,.9));
+    }
 
-    .card-content { flex: 1; margin-bottom: 24px; }
-    .card-content h3 { margin-bottom: 8px; }
-    .card-actions { margin-top: auto; }
-    .card-actions .btn { width: 100%; }
-    
-    /* Delete button (Teacher Mode) */
-    .btn-delete {
-      position: absolute; top: 16px; right: 16px;
-      background: var(--canvas-cream); color: var(--semantic-error);
-      width: 32px; height: 32px; border-radius: 50%;
-      display: none; align-items: center; justify-content: center;
-      font-size: 18px; line-height: 1;
+    .card-body { padding: 14px 16px 16px; }
+    .card-meta {
+      display: flex; align-items: center; gap: 6px;
+      margin-bottom: 6px;
     }
-    .btn-delete:hover { background: #ffebee; }
-    .teacher-active .app-card:hover .btn-delete { display: flex; }
+    .cat-badge {
+      font-size: 10px; font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 90px;
+      color: var(--primary);
+      background: var(--lavender);
+    }
+    .grade-badge {
+      font-size: 10px; font-weight: 600;
+      color: var(--ink-faint);
+    }
+    .status-badge {
+      margin-left: auto;
+      font-size: 9px; font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 90px;
+      background: #fef3c7;
+      color: #b45309;
+    }
+    .card-title {
+      font-size: 13.5px; font-weight: 800;
+      color: var(--ink);
+      margin-bottom: 5px;
+      line-height: 1.3;
+    }
+    .card-desc {
+      font-size: 11.5px;
+      color: var(--ink-muted);
+      line-height: 1.55;
+      margin-bottom: 12px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .card-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 12px; }
+    .tag {
+      font-size: 10px;
+      color: var(--ink-faint);
+      background: #f5f5f5;
+      padding: 2px 7px;
+      border-radius: 90px;
+    }
+    .btn-preview {
+      width: 100%;
+      background: var(--lavender);
+      color: var(--primary);
+      font-size: 12.5px; font-weight: 700;
+      padding: 9px;
+      border-radius: var(--radius-pill);
+      transition: all var(--transition);
+    }
+    .btn-preview:hover {
+      background: var(--primary);
+      color: #fff;
+    }
 
-    /* ─── Modal ─────────────────────────────────────── */
-    .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.4);
-      display: none; align-items: center; justify-content: center;
-      z-index: 1000; backdrop-filter: blur(2px);
-    }
-    .modal-overlay.open { display: flex; }
-    
-    .modal-box {
-      background: var(--canvas); border-radius: var(--radius-xl);
-      padding: 40px; max-width: 500px; width: 100%;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    /* ─── Today Card (featured) ─────────────────────── */
+    .today-card {
+      flex: 0 0 280px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-tint) 100%);
+      color: #fff;
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      scroll-snap-align: start;
+      cursor: pointer;
+      transition: transform var(--transition), box-shadow var(--transition);
       position: relative;
     }
-    .modal-close {
-      position: absolute; top: 24px; right: 24px;
-      font-size: 24px; color: var(--ink-mute); cursor: pointer;
-      background: none; border: none;
+    .today-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 36px rgba(74,21,75,.35);
     }
-    
-    /* Form */
-    .form-group { margin-bottom: 20px; }
-    .form-group label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; }
-    
-    /* ─── Footer ────────────────────────────────────── */
-    footer {
-      background: var(--primary); padding: 32px 48px; color: var(--on-primary);
+    .today-card .card-thumb { background: rgba(255,255,255,.1); }
+    .today-card .card-thumb::after { background: linear-gradient(to bottom, transparent, rgba(74,21,75,.5)); }
+    .today-card .card-body { padding: 14px 16px 16px; }
+    .today-card .card-label {
+      font-size: 10px; font-weight: 700;
+      background: #f5a623;
+      color: #fff;
+      padding: 3px 9px;
+      border-radius: 90px;
+      display: inline-block;
+      margin-bottom: 8px;
     }
-    .footer-links a { color: var(--on-aubergine-mute); margin-right: 24px; text-decoration: none;}
-    .footer-links a:hover { color: var(--on-primary); text-decoration: underline; }
+    .today-card .card-title { color: #fff; font-size: 15px; }
+    .today-card .card-desc { color: rgba(255,255,255,.75); }
+    .today-card .btn-enter {
+      width: 100%;
+      background: #fff;
+      color: var(--primary);
+      font-size: 13px; font-weight: 800;
+      padding: 10px;
+      border-radius: var(--radius-pill);
+      transition: all var(--transition);
+    }
+    .today-card .btn-enter:hover { background: #f0e0ff; transform: scale(1.02); }
 
-    @media (max-width: 768px) {
-      aside { display: none; }
-      .hero { padding: 40px 24px 24px; }
-      .section-wrapper { padding: 0 24px 40px; }
+    /* ─── Empty state ───────────────────────────────── */
+    .empty-state {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--ink-faint);
     }
+    .empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; }
+    .empty-state p { font-size: 14px; }
+
+    /* ═══════════════════════════════════════════════════
+       APP PREVIEW MODAL
+    ═══════════════════════════════════════════════════ */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 1000;
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      opacity: 0; pointer-events: none;
+      transition: opacity var(--transition);
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+    .modal-box {
+      background: #fff;
+      border-radius: var(--radius-modal);
+      max-width: 580px; width: 100%;
+      max-height: 88vh; overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      transform: scale(.94) translateY(16px);
+      transition: transform .3s cubic-bezier(.34,1.4,.64,1), opacity .25s;
+    }
+    .modal-overlay.open .modal-box { transform: scale(1) translateY(0); }
+
+    .modal-thumb {
+      height: 180px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 80px;
+      border-radius: var(--radius-modal) var(--radius-modal) 0 0;
+      position: relative;
+    }
+    .modal-close-btn {
+      position: absolute; top: 12px; right: 12px;
+      width: 32px; height: 32px;
+      background: rgba(255,255,255,.9);
+      border-radius: 50%;
+      font-size: 16px; color: var(--ink);
+      display: flex; align-items: center; justify-content: center;
+      transition: background var(--transition);
+    }
+    .modal-close-btn:hover { background: #fff; }
+
+    .modal-content { padding: 24px 28px; }
+    .modal-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+    .modal-title { font-size: 20px; font-weight: 900; margin-bottom: 10px; line-height: 1.3; }
+    .modal-desc { font-size: 14px; color: var(--ink-muted); line-height: 1.7; margin-bottom: 18px; }
+
+    .modal-section-title {
+      font-size: 12px; font-weight: 700;
+      color: var(--ink-faint);
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .modal-goals { margin-bottom: 18px; }
+    .modal-goal-item {
+      display: flex; align-items: flex-start; gap: 8px;
+      font-size: 13.5px; color: var(--ink);
+      margin-bottom: 6px; line-height: 1.5;
+    }
+    .modal-goal-item::before {
+      content: '✓';
+      color: var(--primary);
+      font-weight: 900; font-size: 13px;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .modal-info-row {
+      display: flex; gap: 16px; flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .modal-info-chip {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; color: var(--ink-muted);
+    }
+    .modal-info-chip .chip-icon { font-size: 14px; }
+
+    .modal-actions { display: flex; gap: 10px; }
+    .btn-run {
+      flex: 1;
+      background: linear-gradient(135deg, var(--primary), var(--primary-tint));
+      color: #fff;
+      font-size: 14px; font-weight: 800;
+      padding: 14px 24px;
+      border-radius: var(--radius-pill);
+      transition: all var(--transition);
+      box-shadow: 0 4px 16px rgba(74,21,75,.3);
+    }
+    .btn-run:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(74,21,75,.4); }
+    .btn-close {
+      background: var(--lavender);
+      color: var(--primary);
+      font-size: 14px; font-weight: 700;
+      padding: 14px 20px;
+      border-radius: var(--radius-pill);
+      transition: all var(--transition);
+    }
+    .btn-close:hover { background: #e6d4f5; }
+
+    /* ═══════════════════════════════════════════════════
+       LEGAL MODALS (이용약관 / 개인정보처리방침)
+    ═══════════════════════════════════════════════════ */
+    .legal-overlay {
+      position: fixed; inset: 0; z-index: 2000;
+      background: rgba(0,0,0,.6);
+      backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      opacity: 0; pointer-events: none;
+      transition: opacity var(--transition);
+    }
+    .legal-overlay.open { opacity: 1; pointer-events: all; }
+
+    .legal-box {
+      background: #fff;
+      border-radius: var(--radius-modal);
+      max-width: 660px; width: 100%;
+      max-height: 85vh; overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      display: flex; flex-direction: column;
+      transform: scale(.95) translateY(20px);
+      transition: transform .3s cubic-bezier(.34,1.4,.64,1);
+    }
+    .legal-overlay.open .legal-box { transform: scale(1) translateY(0); }
+
+    .legal-header {
+      background: linear-gradient(135deg, var(--primary), var(--primary-tint));
+      padding: 20px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .legal-header h2 { color: #fff; font-size: 16px; font-weight: 800; }
+    .legal-close {
+      width: 30px; height: 30px;
+      background: rgba(255,255,255,.2);
+      border-radius: 50%;
+      font-size: 16px; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      transition: background var(--transition);
+    }
+    .legal-close:hover { background: rgba(255,255,255,.3); }
+
+    .legal-scroll {
+      flex: 1; overflow-y: auto;
+      padding: 24px 28px;
+    }
+    .legal-scroll h3 {
+      font-size: 14px; font-weight: 800;
+      color: var(--primary);
+      margin: 20px 0 8px;
+    }
+    .legal-scroll h3:first-child { margin-top: 0; }
+    .legal-scroll p, .legal-scroll li {
+      font-size: 13px; color: var(--ink-muted);
+      line-height: 1.75;
+    }
+    .legal-scroll ul { padding-left: 18px; margin: 6px 0; }
+    .legal-scroll li { margin-bottom: 4px; }
+    .legal-scroll .legal-date {
+      text-align: right;
+      font-size: 12px; color: var(--ink-faint);
+      margin-top: 20px; padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ═══════════════════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════════════════ */
+    #footer {
+      background: #1a0d1b;
+      color: rgba(255,255,255,.6);
+      padding: 28px 32px;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex; flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .footer-brand { flex: 1; min-width: 200px; }
+    .footer-brand .brand-name {
+      color: #fff; font-size: 14px; font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .footer-brand .brand-org { color: rgba(255,255,255,.5); font-size: 12px; }
+    .footer-links {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      margin-top: 12px;
+    }
+    .footer-link {
+      color: rgba(255,255,255,.55);
+      font-size: 12px;
+      cursor: pointer;
+      padding: 3px 0;
+      border-bottom: 1px solid transparent;
+      transition: color var(--transition), border-color var(--transition);
+    }
+    .footer-link:hover { color: #fff; border-color: rgba(255,255,255,.4); }
+    .footer-divider { color: rgba(255,255,255,.2); margin: 0 4px; }
+
+    .footer-info { text-align: right; min-width: 200px; }
+    .footer-info p { margin-bottom: 2px; }
+    .footer-copyright {
+      margin-top: 16px; padding-top: 14px;
+      border-top: 1px solid rgba(255,255,255,.08);
+      text-align: center; font-size: 11px;
+      color: rgba(255,255,255,.3);
+    }
+
+    /* ═══════════════════════════════════════════════════
+       ANIMATIONS
+    ═══════════════════════════════════════════════════ */
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp { from { transform: translateY(40px) scale(.96); opacity: 0; } to { transform: none; opacity: 1; } }
+
+    /* ─── No search results ─────────────────────────── */
+    #no-results {
+      display: none;
+      grid-column: 1/-1;
+    }
+
+    /* ─── Responsive ────────────────────────────────── */
+    @media (max-width: 768px) {
+      #sidebar { display: none; }
+      #header { padding: 0 16px; }
+      .header-search { max-width: 200px; margin: 0 12px; }
+      .section { padding: 20px 16px; }
+      .hero-banner { padding: 20px 16px 0; }
+      #footer { padding: 20px 16px; }
+      .footer-inner { flex-direction: column; }
+      .footer-info { text-align: left; }
+      .modal-content { padding: 16px 20px; }
+    }
+    @media (max-width: 480px) {
+      .header-search { display: none; }
+      .btn-guide-again span { display: none; }
+    }
+
+    /* ─── Pulse animation on today badge ───────────── */
+    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.6; } }
+    .pulse { animation: pulse 2s ease-in-out infinite; }
+
+    /* ─── Shimmer effect for cards ──────────────────── */
+    .app-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,.5) 50%, transparent 60%);
+      background-size: 200% 200%;
+      opacity: 0;
+      transition: opacity .3s;
+      pointer-events: none;
+      border-radius: var(--radius-card);
+    }
+    .app-card:hover::before { opacity: 1; }
   </style>
 </head>
 <body>
 
-<header>
-  <div class="brand-logo">Learning Portal</div>
-  <div class="header-nav">
-    <div class="search-bar">
-      <span class="search-icon">🔍</span>
-      <input type="text" id="search-input" class="text-input" placeholder="Search apps..." oninput="handleSearch(this.value)" />
+<!-- ══════════════════════════════════════════════════
+     ETHICS GATE MODAL
+══════════════════════════════════════════════════ -->
+<div id="ethics-overlay" role="dialog" aria-modal="true" aria-labelledby="ethics-title">
+  <div id="ethics-modal">
+
+    <div class="ethics-header">
+      <div class="badge">📋 입장 전 필독</div>
+      <h1 id="ethics-title">AI 윤리 핵심가이드를 확인해 주세요</h1>
+      <p>생성형 AI를 올바르고 현명하게 사용하기 위한 우리만의 약속입니다.<br>아래 6가지 가이드를 꼼꼼히 읽고 실천을 다짐해 주세요.</p>
+      <div class="ethics-icon-hero">🤖</div>
     </div>
-    <button class="btn btn-secondary btn-cap" id="teacher-toggle" onclick="toggleTeacherMode()">Teacher Mode</button>
+
+    <div class="ethics-body">
+      <div class="ethics-intro">
+        📌 이 포털에서 제공하는 AI 학습 도구는 <strong>생성형 AI</strong>와 함께 사용합니다.
+        올바른 AI 활용을 위해 아래 핵심 가이드를 먼저 확인해 주세요.
+        버튼을 클릭하면 활동을 시작할 수 있습니다.
+      </div>
+
+      <div class="guide-grid">
+        <!-- 가이드 1 -->
+        <div class="guide-card primary-hue">
+          <div class="guide-num-row">
+            <div class="guide-num c1">1</div>
+            <div class="guide-label">가이드 1 · 활용 목적</div>
+          </div>
+          <div class="guide-value-badge">
+            <span class="value-chip">주도성</span>
+            <span class="value-chip">합목적성</span>
+          </div>
+          <div class="guide-title">생성형 AI의 활용 이유와 범위를 스스로 설명할 수 있어야 해요.</div>
+          <div class="guide-desc">생성형 AI를 활용하는 이유가 진짜 궁금한 것을 탐구하기 위해 보조 도구로 활용하려는 것인지, 숙제를 빨리 끝내려는 것인지 스스로에게 먼저 물어봐요. 선생님이 허락하신 범위에서 내가 정한 학습 목표를 달성하기 위해 생성형 AI를 보조 도구로 활용해요.</div>
+        </div>
+        <!-- 가이드 2 -->
+        <div class="guide-card orange-hue">
+          <div class="guide-num-row">
+            <div class="guide-num c2">2</div>
+            <div class="guide-label">가이드 2 · 주도적 학습</div>
+          </div>
+          <div class="guide-value-badge">
+            <span class="value-chip">주도성</span>
+          </div>
+          <div class="guide-title">생성형 AI를 사용하기 전, 내가 아는 것을 정리하고 질문을 설계해요.</div>
+          <div class="guide-desc">생성형 AI를 사용하기 전에 내 생각을 먼저 적어봐요. 내가 모르는 것이 무엇인지 파악한 다음, 이를 배우기 위해 어떤 도움을 받을지 구체적인 질문(프롬프트)을 만들어요.</div>
+        </div>
+        <!-- 가이드 3 -->
+        <div class="guide-card green-hue">
+          <div class="guide-num-row">
+            <div class="guide-num c3">3</div>
+            <div class="guide-label">가이드 3 · 비판적 검증</div>
+          </div>
+          <div class="guide-value-badge">
+            <span class="value-chip">주도성</span>
+          </div>
+          <div class="guide-title">생성형 AI의 답변 속 오류나 편향된 시각을 직접 찾아보고 비교해요.</div>
+          <div class="guide-desc">생성형 AI는 가끔 그럴듯한 거짓말(할루시네이션)을 할 수 있어요. 생성형 AI의 답변을 맹신하지 않고 교과서나 공식 자료를 통해 한 번 더 교차 검증해요. 한쪽으로 치우친 생각은 아닌지 비판적으로 검증하는 습관을 가져요.</div>
+        </div>
+        <!-- 가이드 4 -->
+        <div class="guide-card teal-hue">
+          <div class="guide-num-row">
+            <div class="guide-num c4">4</div>
+            <div class="guide-label">가이드 4 · 사고의 확장</div>
+          </div>
+          <div class="guide-value-badge">
+            <span class="value-chip">주도성</span>
+            <span class="value-chip">합목적성</span>
+          </div>
+          <div class="guide-title">단순한 질문을 넘어 좋은 질문을 설계하며 생각의 범위를 넓혀요.</div>
+          <div class="guide-desc">생성형 AI에게 단순히 정답만을 요구하는 것은 바람직하지 않아요. 생성형 AI 답변의 근거와 다른 관점을 고려하여, "왜 그럴까?", "다른 방법은 없을까?"라고 다각도의 심화 질문을 이어가요. 생성형 AI를 토론 파트너처럼 활용하여 나의 생각을 키워가요.</div>
+        </div>
+        <!-- 가이드 5 -->
+        <div class="guide-card blue-hue">
+          <div class="guide-num-row">
+            <div class="guide-num c5">5</div>
+            <div class="guide-label">가이드 5 · 안전과 관계</div>
+          </div>
+          <div class="guide-value-badge">
+            <span class="value-chip">안전성</span>
+          </div>
+          <div class="guide-title">개인정보를 스스로 지키고, 생성형 AI와 정서적 거리를 유지해요.</div>
+          <div class="guide-desc">나 또는 타인의 이름, 연락처, 주소, 개인 정보 등을 함부로 생성형 AI에 입력하지 말아요. 이러한 정보가 생성형 AI 학습에 활용될 수 있어요. 속상하거나 힘든 일이 있을 때는 생성형 AI보다 나를 진심으로 이해해 줄 수 있는 가족, 선생님, 친구들과 마음을 나눠요.</div>
+        </div>
+        <!-- 가이드 6 -->
+        <div class="guide-card purple-hue">
+          <div class="guide-num-row">
+            <div class="guide-num c6">6</div>
+            <div class="guide-label">가이드 6 · 투명성·윤리</div>
+          </div>
+          <div class="guide-value-badge">
+            <span class="value-chip">투명성</span>
+          </div>
+          <div class="guide-title">생성형 AI를 활용한 부분과 내 생각을 명확하게 구분해서 밝혀요.</div>
+          <div class="guide-desc">수업이나 평가 및 과제에서 생성형 AI의 도움을 받았다면, 어떤 도구를 어떤 방식으로 참고했는지 투명하게 밝혀요. 생성형 AI의 답변을 내가 쓴 것처럼 제출하는 것은 표절·부정행위임을 명심해요.</div>
+        </div>
+      </div>
+
+      <!-- 서약 영역 -->
+      <div class="ethics-pledge">
+        <div class="pledge-icon">🤝</div>
+        <div class="pledge-text">
+          나는 윤리 핵심가이드를 빠짐없이 읽고 이를 실천하겠습니다.
+          <span>위 6가지 가이드를 이해하고 AI 학습 활동에서 이를 지킬 것을 다짐합니다.</span>
+        </div>
+      </div>
+
+      <button class="btn-ethics-enter" id="btn-ethics-enter" onclick="enterPortal()">
+        ✅ &nbsp;나는 윤리 핵심가이드를 빠짐없이 읽고 이를 실천하겠습니다.
+      </button>
+      <p class="ethics-notice">
+        버튼을 클릭하면 본 활동으로 이동합니다. 언제든지 헤더의
+        <a onclick="openEthicsGuide()">📋 가이드 다시 보기</a>를
+        통해 다시 확인할 수 있습니다.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     HEADER
+══════════════════════════════════════════════════ -->
+<header id="header">
+  <div class="header-logo">
+    <div class="logo-mark">🏫</div>
+    <div class="logo-text">
+      창일중 AI 학습 포털
+      <span>Changil Middle School · Learning Apps</span>
+    </div>
+  </div>
+
+  <div class="header-search">
+    <span class="search-icon">🔍</span>
+    <input type="search" id="search-input" placeholder="앱 이름, 카테고리, 태그 검색..." aria-label="앱 검색" oninput="handleSearch(this.value)" />
+  </div>
+
+  <div class="header-actions">
+    <button class="btn-guide-again" id="btn-guide-again" onclick="openEthicsGuide()" title="윤리 가이드 다시 보기">
+      📋 <span>가이드 다시 보기</span>
+    </button>
+    <button class="btn-teacher" id="btn-teacher-toggle" onclick="toggleTeacherMode()">
+      👩‍🏫 교사 보기
+    </button>
   </div>
 </header>
 
-<div id="main-container">
-  <aside>
-    <div class="micro-cap nav-label">Categories</div>
-    <div id="nav-items-container">
-      <!-- Categories injected via JS -->
-    </div>
-    
-    <div class="micro-cap nav-label" style="margin-top: 32px; display: none;" id="admin-label">Admin</div>
-    <div id="admin-actions" style="display: none;">
-      <button class="btn btn-outline btn-cap" style="width: 100%;" onclick="openAddAppModal()">+ Add Web App</button>
-    </div>
-  </aside>
+<!-- ══════════════════════════════════════════════════
+     MAIN LAYOUT
+══════════════════════════════════════════════════ -->
+<div id="main-wrap">
 
-  <main>
-    <div class="hero">
-      <h1 class="display-md">Welcome to your learning space</h1>
-      <p class="body-lg">Explore curated web apps for coding, AI, and digital ethics. Find the right tool for your next lesson.</p>
-    </div>
-    
-    <div class="section-wrapper">
-      <h2 class="heading-md" id="section-title">All Apps</h2>
-      <div class="card-grid" id="app-grid">
-        <!-- Apps injected via JS -->
+  <!-- SIDEBAR -->
+  <nav id="sidebar" aria-label="카테고리 탐색">
+    <div class="sidebar-section">
+      <div class="today-badge" onclick="filterCategory('오늘의 수업앱')">
+        <div class="today-icon pulse">⭐</div>
+        <div>
+          <div class="today-text">오늘의 수업앱</div>
+          <div class="today-sub">선생님이 지정한 앱</div>
+        </div>
       </div>
     </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">탐색</div>
+      <div class="nav-item active" data-cat="전체앱" onclick="filterCategory('전체앱')">
+        <span class="nav-icon">🏠</span> 전체 앱 <span class="nav-count" id="count-all">0</span>
+      </div>
+      <div class="nav-item" data-cat="코딩" onclick="filterCategory('코딩')">
+        <span class="nav-icon">💻</span> 코딩 <span class="nav-count" id="count-코딩">0</span>
+      </div>
+      <div class="nav-item" data-cat="인공지능" onclick="filterCategory('인공지능')">
+        <span class="nav-icon">🤖</span> 인공지능 <span class="nav-count" id="count-인공지능">0</span>
+      </div>
+      <div class="nav-item" data-cat="디지털 윤리" onclick="filterCategory('디지털 윤리')">
+        <span class="nav-icon">🛡️</span> 디지털 윤리 <span class="nav-count" id="count-디지털 윤리">0</span>
+      </div>
+      <div class="nav-item" data-cat="퀴즈·복습" onclick="filterCategory('퀴즈·복습')">
+        <span class="nav-icon">📝</span> 퀴즈·복습 <span class="nav-count" id="count-퀴즈·복습">0</span>
+      </div>
+      <div class="nav-item" data-cat="프로젝트" onclick="filterCategory('프로젝트')">
+        <span class="nav-icon">🎨</span> 프로젝트 활동 <span class="nav-count" id="count-프로젝트">0</span>
+      </div>
+      <div class="nav-item" data-cat="학급도구" onclick="filterCategory('학급도구')">
+        <span class="nav-icon">🎲</span> 학급도구 <span class="nav-count" id="count-학급도구">0</span>
+      </div>
+    </div>
+
+    <div class="sidebar-section" id="teacher-section" style="display:none;">
+      <div class="sidebar-label">교사 관리</div>
+      <div class="nav-item" onclick="alert('앱 등록 기능은 준비 중입니다.')">
+        <span class="nav-icon">➕</span> 앱 등록
+      </div>
+      <div class="nav-item" onclick="alert('수업앱 지정 기능은 준비 중입니다.')">
+        <span class="nav-icon">📌</span> 오늘 수업앱 지정
+      </div>
+    </div>
+  </nav>
+
+  <!-- CONTENT -->
+  <main id="content">
+
+    <!-- Hero -->
+    <div class="hero-banner">
+      <div class="hero-inner">
+        <h2>안녕하세요! 오늘도 함께 배워볼까요? 🎉</h2>
+        <p>코딩, 인공지능, 디지털 윤리 등 다양한 학습 앱이 여러분을 기다립니다.<br>
+        카드를 클릭해 미리보기를 확인하고, 실행하기 버튼을 눌러 시작하세요!</p>
+        <div class="hero-emoji">📚</div>
+      </div>
+    </div>
+
+    <!-- Today's App section -->
+    <div class="section" id="section-today">
+      <div class="section-header">
+        <h2 class="section-title"><span class="dot"></span> ⭐ 오늘의 수업앱</h2>
+        <span class="section-hint">👆 선생님이 오늘 사용할 앱을 지정했어요</span>
+      </div>
+      <div class="card-strip" id="strip-today"></div>
+    </div>
+
+    <!-- All Apps section -->
+    <div class="section" id="section-apps">
+      <div class="section-header">
+        <h2 class="section-title" id="section-apps-title"><span class="dot"></span> 전체 앱</h2>
+        <span class="section-hint">← → 스크롤하며 탐색하세요</span>
+      </div>
+      <div class="card-strip" id="strip-apps"></div>
+    </div>
+
   </main>
 </div>
 
-<footer>
-  <div class="footer-links">
-    <a href="#" onclick="alert('Terms of Service')">Terms of Service</a>
-    <a href="#" onclick="alert('Privacy Policy')">Privacy Policy</a>
-    <span class="caption" style="color: var(--on-aubergine-mute); float: right;">© 2026 Learning Portal</span>
-  </div>
-</footer>
-
-<!-- ─── Add App Modal ─────────────────────────────── -->
-<div class="modal-overlay" id="add-app-modal" onclick="closeModal(event, 'add-app-modal')">
-  <div class="modal-box">
-    <button class="modal-close" onclick="closeModalDirect('add-app-modal')">×</button>
-    <h2 class="heading-md" style="margin-bottom: 24px;">Add New App</h2>
-    
-    <form id="add-app-form" onsubmit="saveApp(event)">
-      <div class="form-group">
-        <label>App Title</label>
-        <input type="text" id="form-title" class="text-input" required placeholder="e.g. Logic Puzzle Game" />
-      </div>
-      <div class="form-group">
-        <label>Category</label>
-        <input type="text" id="form-category" class="text-input" required placeholder="e.g. Coding" />
-      </div>
-      <div class="form-group">
-        <label>Description</label>
-        <input type="text" id="form-desc" class="text-input" required placeholder="Short description..." />
-      </div>
-      <div class="form-group">
-        <label>URL / Link</label>
-        <input type="url" id="form-url" class="text-input" required placeholder="https://..." />
-      </div>
-      <div class="form-group" style="display: flex; align-items: center; gap: 8px;">
-        <input type="checkbox" id="form-today" style="width: 16px; height: 16px;"/>
-        <label style="margin: 0; font-weight: 400;">Mark as "Today's App"</label>
-      </div>
-      
-      <div style="margin-top: 32px; display: flex; justify-content: flex-end; gap: 12px;">
-        <button type="button" class="btn btn-secondary" onclick="closeModalDirect('add-app-modal')">Cancel</button>
-        <button type="submit" class="btn btn-primary">Save App</button>
-      </div>
-    </form>
+<!-- ══════════════════════════════════════════════════
+     ADD APP MODAL (TEACHER)
+══════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="add-app-overlay" onclick="closeAddAppModal(event)" role="dialog" aria-modal="true" aria-labelledby="add-app-title">
+  <div class="modal-box" id="add-app-box" style="padding: 24px; max-width: 500px;">
+    <h2 id="add-app-title" style="margin-bottom: 16px; font-size: 18px;">새 웹앱 등록</h2>
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <input type="text" id="add-app-title-input" placeholder="앱 이름 (예: 엔트리 코딩)" style="padding:10px; border:1px solid var(--border); border-radius:8px; outline:none; font-family:inherit;">
+      <select id="add-app-category" style="padding:10px; border:1px solid var(--border); border-radius:8px; outline:none; font-family:inherit;">
+        <option value="코딩">코딩</option>
+        <option value="인공지능">인공지능</option>
+        <option value="디지털 윤리">디지털 윤리</option>
+        <option value="퀴즈·복습">퀴즈·복습</option>
+        <option value="프로젝트">프로젝트 활동</option>
+        <option value="학급도구">학급도구</option>
+      </select>
+      <input type="text" id="add-app-emoji" placeholder="이모지 (예: 💻)" style="padding:10px; border:1px solid var(--border); border-radius:8px; outline:none; font-family:inherit;">
+      <input type="url" id="add-app-url" placeholder="URL (예: https://playentry.org)" style="padding:10px; border:1px solid var(--border); border-radius:8px; outline:none; font-family:inherit;">
+      <textarea id="add-app-desc" placeholder="앱 설명" style="padding:10px; border:1px solid var(--border); border-radius:8px; outline:none; font-family:inherit; resize:vertical; min-height:80px;"></textarea>
+    </div>
+    <div style="display:flex; gap:10px; margin-top:20px;">
+      <button class="btn-run" onclick="saveApp()">등록하기</button>
+      <button class="btn-close" onclick="closeAddAppModalDirect()">취소</button>
+    </div>
   </div>
 </div>
 
+<!-- ══════════════════════════════════════════════════
+     APP PREVIEW MODAL
+══════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="preview-overlay" onclick="closePreview(event)" role="dialog" aria-modal="true" aria-labelledby="modal-app-title">
+  <div class="modal-box" id="preview-box">
+    <div class="modal-thumb" id="modal-thumb">
+      <button class="modal-close-btn" onclick="closePreviewDirect()" aria-label="닫기">✕</button>
+    </div>
+    <div class="modal-content">
+      <div class="modal-meta" id="modal-meta"></div>
+      <h2 class="modal-title" id="modal-app-title"></h2>
+      <p class="modal-desc" id="modal-desc"></p>
+      <div class="modal-section-title">📌 학습 목표</div>
+      <div class="modal-goals" id="modal-goals"></div>
+      <div class="modal-info-row" id="modal-info-row"></div>
+      <div class="modal-actions">
+        <button class="btn-run" id="btn-run" onclick="runApp()">🚀 실행하기</button>
+        <button class="btn-close" onclick="closePreviewDirect()">닫기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     이용약관 MODAL
+══════════════════════════════════════════════════ -->
+<div class="legal-overlay" id="terms-overlay" onclick="closeLegal('terms-overlay', event)" role="dialog" aria-modal="true" aria-labelledby="terms-title">
+  <div class="legal-box">
+    <div class="legal-header">
+      <h2 id="terms-title">📄 이용약관</h2>
+      <button class="legal-close" onclick="closeLegalDirect('terms-overlay')" aria-label="닫기">✕</button>
+    </div>
+    <div class="legal-scroll">
+      <h3>제1조 (목적)</h3>
+      <p>이 약관은 창일중학교 AI 학습 웹앱 포털(이하 '본 서비스')이 제공하는 무료 교육용 웹 애플리케이션 서비스를 이용함에 있어 서비스 제공자와 이용자의 권리·의무 및 책임사항을 규정함을 목적으로 합니다.</p>
+
+      <h3>제2조 (정의)</h3>
+      <ul>
+        <li>'서비스'란 본 플랫폼에서 제공하는 교육용 웹 애플리케이션 포털을 말합니다.</li>
+        <li>'이용자'란 본 서비스에 접속하여 이 약관에 따라 서비스를 이용하는 모든 사용자(학생, 교사)를 말합니다. 본 서비스는 별도의 회원가입을 요구하지 않습니다.</li>
+      </ul>
+
+      <h3>제3조 (약관의 명시와 개정)</h3>
+      <p>① 본 서비스는 이 약관의 내용을 이용자가 쉽게 알 수 있도록 서비스 내에 게시합니다.<br>
+      ② 본 서비스는 관련 법령을 위배하지 않는 범위에서 이 약관을 개정할 수 있습니다.<br>
+      ③ 약관을 개정할 경우에는 적용일자 및 개정사유를 명시하여 현행약관과 함께 서비스 내에 공지합니다.</p>
+
+      <h3>제4조 (서비스의 제공)</h3>
+      <ul>
+        <li>본 서비스는 교육 목적의 무료 웹 애플리케이션 포털을 제공합니다.</li>
+        <li>서비스의 이용은 무료이며, 별도의 유료 결제가 필요하지 않습니다.</li>
+        <li>본 서비스는 교육 활동 지원을 목적으로 하며, 상업적 목적으로 운영되지 않습니다.</li>
+      </ul>
+
+      <h3>제5조 (서비스의 중단)</h3>
+      <p>① 본 서비스는 기기 환경, 브라우저 오류, 통신 두절 등의 사유가 발생한 경우에는 서비스의 제공을 일시적으로 중단할 수 있습니다.<br>
+      ② 본 서비스는 무료로 제공되는 교육용 서비스이므로, 서비스 중단으로 인한 별도의 보상은 제공되지 않습니다.</p>
+
+      <h3>제6조 (이용 조건)</h3>
+      <p>① 이용자는 서비스에 접속하여 AI 윤리 핵심가이드 확인 버튼을 클릭함으로써 본 약관에 동의하는 것으로 간주합니다.<br>
+      ② 만 14세 미만의 아동의 정보가 포함될 경우, 학교 가정통신문 등을 통해 보호자(법정대리인)의 동의를 받은 후 서비스를 이용할 수 있습니다.</p>
+
+      <h3>제7조 (이용자의 의무)</h3>
+      <p>이용자는 다음 행위를 하여서는 안 됩니다.</p>
+      <ul>
+        <li>허위 내용의 등록 또는 타인의 정보 도용</li>
+        <li>서비스에 게시된 정보의 무단 변경</li>
+        <li>서비스의 운영을 방해하는 행위</li>
+        <li>타인의 명예를 손상시키거나 불이익을 주는 행위</li>
+        <li>공서양속에 반하는 정보를 게시하는 행위</li>
+      </ul>
+
+      <h3>제8조 (저작권)</h3>
+      <p>① 본 서비스가 작성한 저작물에 대한 저작권은 서비스 제공자에게 귀속합니다.<br>
+      ② 이용자는 서비스를 이용하여 얻은 정보를 서비스 제공자의 사전 승낙 없이 복제, 송신, 출판, 배포하여서는 안 됩니다.</p>
+
+      <h3>제9조 (면책조항)</h3>
+      <p>① 본 서비스는 무료로 제공되는 교육용 서비스로서, 서비스 이용 중 발생하는 기술적 문제나 오류에 대해 제한적 책임을 집니다.<br>
+      ② 본 서비스가 연결하는 외부 링크나 애플리케이션의 내용에 대해서는 해당 제공자가 책임을 집니다.</p>
+
+      <h3>제10조 (분쟁해결)</h3>
+      <p>본 서비스와 이용자 간에 발생한 분쟁에 관하여는 대한민국 법을 적용하며, 소송이 제기되는 경우 서비스 제공자의 소재지를 관할하는 법원을 관할법원으로 합니다.</p>
+
+      <div class="legal-date">부칙: 이 약관은 2026년 6월 27일부터 시행됩니다.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     개인정보처리방침 MODAL
+══════════════════════════════════════════════════ -->
+<div class="legal-overlay" id="privacy-overlay" onclick="closeLegal('privacy-overlay', event)" role="dialog" aria-modal="true" aria-labelledby="privacy-title">
+  <div class="legal-box">
+    <div class="legal-header">
+      <h2 id="privacy-title">🔒 개인정보처리방침</h2>
+      <button class="legal-close" onclick="closeLegalDirect('privacy-overlay')" aria-label="닫기">✕</button>
+    </div>
+    <div class="legal-scroll">
+      <p>창일중학교 AI 학습 웹앱 포털(이하 '본 서비스')은 개인정보 보호법 제30조에 따라 정보주체의 개인정보를 보호하고 이와 관련한 고충을 신속하고 원활하게 처리할 수 있도록 하기 위하여 다음과 같이 개인정보 처리방침을 수립·공개합니다.</p>
+
+      <h3>제1조 (개인정보의 처리 목적)</h3>
+      <p>본 서비스는 다음의 목적을 위하여 개인정보를 처리합니다. 처리하고 있는 개인정보는 다음의 목적 이외의 용도로는 이용되지 않으며, 이용 목적이 변경되는 경우에는 개인정보 보호법 제18조에 따라 별도의 동의를 받는 등 필요한 조치를 이행할 예정입니다.</p>
+      <ul>
+        <li><strong>교육 활동 지원</strong>: 학생 맞춤형 학습 앱 제공 및 수업 활동 지원</li>
+        <li><strong>서비스 이용 기록 관리</strong>: 윤리 가이드 확인 여부 등 최소한의 브라우저 로컬 저장</li>
+      </ul>
+
+      <h3>제2조 (개인정보의 처리 및 보유기간)</h3>
+      <p>① 본 서비스는 법령에 따른 개인정보 보유·이용기간 또는 정보주체로부터 개인정보를 수집 시에 동의받은 개인정보 보유·이용기간 내에서 개인정보를 처리·보유합니다.</p>
+      <ul>
+        <li><strong>보유 기간</strong>: 해당 학년도 종료 시(익년 2월 말) 또는 학생의 졸업/진급 시까지</li>
+        <li><strong>파기 시점</strong>: 보유 기간 종료 후 지체 없이(5일 이내) 파기</li>
+      </ul>
+
+      <h3>제3조 (처리하는 개인정보 항목)</h3>
+      <p>본 서비스는 학습 지원을 위해 필요한 최소한의 개인정보만을 처리합니다.</p>
+      <ul>
+        <li><strong>수집 항목</strong>: 윤리 가이드 확인 여부(브라우저 로컬 스토리지, 식별 불가)</li>
+        <li><strong>수집하지 않는 항목</strong>: 주민등록번호, 주소, 전화번호, 이메일, 아이디, 비밀번호 등 불필요한 민감 정보</li>
+      </ul>
+
+      <h3>제4조 (만 14세 미만 아동의 개인정보 처리)</h3>
+      <p>① 본 서비스는 만 14세 미만 아동의 개인정보를 처리하기 위하여 학기 초 학교 가정통신문(개인정보 수집·이용 동의서)을 통하여 법정대리인의 동의를 받습니다.<br>
+      ② 법정대리인이 동의하지 않는 경우, 해당 아동은 서비스 이용이 제한될 수 있습니다.</p>
+
+      <h3>제5조 (개인정보의 파기 절차 및 방법)</h3>
+      <p>① 개인정보 보유기간의 경과, 처리목적 달성 등 개인정보가 불필요하게 되었을 때에는 지체 없이 해당 개인정보를 파기합니다.<br>
+      ② <strong>파기 방법</strong>: 본 서비스는 별도의 외부 서버를 사용하지 않고 사용자의 웹 브라우저 로컬 스토리지에 데이터를 저장합니다. 브라우저의 캐시 및 사이트 데이터를 삭제함으로써 기록을 재생할 수 없도록 파기합니다.</p>
+
+      <h3>제6조 (개인정보의 안전성 확보조치)</h3>
+      <ul>
+        <li><strong>데이터 로컬 저장</strong>: 수집된 데이터는 외부 클라우드나 서버로 전송되지 않으며, 전적으로 사용자의 개인 기기 웹 브라우저 내부에만 저장됩니다.</li>
+        <li><strong>개인정보 취급 최소화</strong>: 개인정보를 처리하는 담당자를 기기를 사용하는 교사 1인으로 한정하여 접근 권한을 관리합니다.</li>
+      </ul>
+
+      <h3>제7조 (정보주체와 법정대리인의 권리·의무 및 행사방법)</h3>
+      <p>① 정보주체(학생) 및 법정대리인은 언제든지 개인정보 열람·정정·삭제·처리정지 요구 등의 권리를 행사할 수 있습니다.<br>
+      ② 권리 행사는 서비스 내 기능을 통하여 즉시 가능하며, 또는 담당 교사에게 구두나 서면으로 요청하면 지체 없이 조치하겠습니다.</p>
+
+      <h3>제8조 (개인정보 보호책임자)</h3>
+      <ul>
+        <li><strong>성명</strong>: 이서영</li>
+        <li><strong>소속</strong>: 창일중학교</li>
+        <li><strong>직위</strong>: 교사 (정보관리책임자)</li>
+      </ul>
+
+      <h3>제9조 (개인정보 처리방침 변경)</h3>
+      <p>이 개인정보 처리방침은 2026년 6월 27일부터 적용됩니다.</p>
+
+      <div class="legal-date">시행일: 2026년 6월 27일</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     FOOTER
+══════════════════════════════════════════════════ -->
+<footer id="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="brand-name">🏫 창일중학교 AI 학습 웹앱 포털</div>
+      <div class="brand-org">Changil Middle School · 정보·인공지능 수업 통합 포털</div>
+      <div class="footer-links">
+        <span class="footer-link" id="footer-terms" onclick="openLegal('terms-overlay')" tabindex="0" role="button">이용약관</span>
+        <span class="footer-divider">|</span>
+        <span class="footer-link" id="footer-privacy" onclick="openLegal('privacy-overlay')" tabindex="0" role="button" style="font-weight:700;">개인정보처리방침</span>
+        <span class="footer-divider">|</span>
+        <span class="footer-link" onclick="openEthicsGuide()">📋 윤리 가이드</span>
+      </div>
+    </div>
+    <div class="footer-info">
+      <p>정보관리책임자: 이서영 교사 (창일중학교)</p>
+      <p>교육용 비상업적 서비스 · 무료 제공</p>
+      <p>본 포털은 학생 및 교사의 교육 활동 지원을 위해 운영됩니다.</p>
+    </div>
+  </div>
+  <div class="footer-copyright">
+    &copy; 2026 창일중학교 AI 학습 웹앱 포털. All rights reserved.
+    이 서비스는 교육 목적으로 제작되었으며 상업적 이용을 금합니다.
+  </div>
+</footer>
+
+<!-- ══════════════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════════════ -->
 <script>
-/* ─── Default Hardcoded Apps (Fallback) ──────────────── */
-const DEFAULT_APPS = [
+/* ── App Data ─────────────────────────────────────── */
+const APPS = [
+  /* 오늘의 수업앱 */
   {
-    id: 'app-1',
-    title: 'AI Ethics Game',
-    category: 'AI & Ethics',
-    desc: 'Interactive scenarios to understand AI bias and ethical decision making.',
-    url: 'https://example.com/ethics',
-    isToday: true
+    id: 'ai-ethics-gate',
+    title: 'AI 윤리 선택 게임',
+    category: '인공지능',
+    grade: '전체',
+    desc: 'AI가 내린 결정이 옳은지 판단하고 내 의견을 선택하는 인터랙티브 게임입니다.',
+    emoji: '⚖️',
+    bg: 'linear-gradient(135deg, #f9f0ff, #efe2ff)',
+    tags: ['AI윤리', '토론', '선택게임'],
+    goals: ['AI의 의사결정 원리를 이해한다.', '윤리적 판단 기준을 세울 수 있다.', '다양한 관점에서 AI 활용을 평가한다.'],
+    time: '20분',
+    url: '#',
+    isToday: true,
+    isPublic: true
+  },
+  /* 코딩 */
+  {
+    id: 'entry-debug',
+    title: '함수 디버깅 실습',
+    category: '코딩',
+    grade: '중1',
+    desc: '함수 안의 잘못된 블록을 찾아 점프 동작을 수정하는 실습형 웹앱입니다.',
+    emoji: '🐛',
+    bg: 'linear-gradient(135deg, #e8f5e9, #c8e6c9)',
+    tags: ['함수', '엔트리', '디버깅'],
+    goals: ['함수의 역할을 이해한다.', '오류가 생긴 블록을 찾을 수 있다.', '잘못된 블록을 수정하여 프로그램을 완성할 수 있다.'],
+    time: '20분',
+    url: '#',
+    isToday: false,
+    isPublic: true
   },
   {
-    id: 'app-2',
-    title: 'Function Debugger',
-    category: 'Coding',
-    desc: 'Find and fix broken logic blocks to help the character jump.',
-    url: 'https://example.com/debug',
-    isToday: false
+    id: 'algo-maze',
+    title: '알고리즘 미로 탈출',
+    category: '코딩',
+    grade: '중2',
+    desc: '알고리즘 명령어를 사용해 캐릭터를 미로에서 탈출시키는 논리력 게임입니다.',
+    emoji: '🌀',
+    bg: 'linear-gradient(135deg, #e3f2fd, #bbdefb)',
+    tags: ['알고리즘', '순서도', '논리'],
+    goals: ['알고리즘을 순서대로 작성할 수 있다.', '반복 구조를 이해하고 활용한다.'],
+    time: '15분',
+    url: '#',
+    isToday: false,
+    isPublic: true
   },
   {
-    id: 'app-3',
-    title: 'Algorithm Maze',
-    category: 'Coding',
-    desc: 'Use sequencing and loops to escape the labyrinth.',
-    url: 'https://example.com/maze',
-    isToday: false
+    id: 'condition-game',
+    title: '조건문 선택 게임',
+    category: '코딩',
+    grade: '중1',
+    desc: '조건에 따라 다른 결과가 나오는 게임으로 if-else 개념을 익힙니다.',
+    emoji: '🔀',
+    bg: 'linear-gradient(135deg, #fff8e1, #fff3c4)',
+    tags: ['조건문', 'if-else', '프로그래밍'],
+    goals: ['조건문의 구조를 이해한다.', '다양한 조건을 설계할 수 있다.'],
+    time: '15분',
+    url: '#',
+    isToday: false,
+    isPublic: true
   },
+  /* 인공지능 */
   {
-    id: 'app-4',
-    title: 'Teachable Machine',
-    category: 'AI & Ethics',
-    desc: 'Train your own image classification model right in the browser.',
+    id: 'ai-image',
+    title: 'AI 이미지 분류 체험',
+    category: '인공지능',
+    grade: '전체',
+    desc: '티처블 머신을 활용해 직접 AI 모델을 학습시키고 이미지를 분류해봐요.',
+    emoji: '🖼️',
+    bg: 'linear-gradient(135deg, #fce4ec, #f8bbd0)',
+    tags: ['티처블머신', '머신러닝', '분류'],
+    goals: ['머신러닝의 학습 원리를 이해한다.', '직접 AI 모델을 학습시킬 수 있다.'],
+    time: '25분',
     url: 'https://teachablemachine.withgoogle.com/',
-    isToday: false
+    isToday: false,
+    isPublic: true
+  },
+  {
+    id: 'ai-text',
+    title: 'AI 텍스트 분류 체험',
+    category: '인공지능',
+    grade: '전체',
+    desc: '댓글이나 문장을 긍정/부정으로 분류하는 AI 모델을 직접 만들어봐요.',
+    emoji: '💬',
+    bg: 'linear-gradient(135deg, #e8eaf6, #c5cae9)',
+    tags: ['자연어처리', 'AI', '감정분석'],
+    goals: ['자연어처리 개념을 이해한다.', '텍스트 데이터 분류 원리를 익힌다.'],
+    time: '20분',
+    url: '#',
+    isToday: false,
+    isPublic: true
+  },
+  /* 디지털 윤리 */
+  {
+    id: 'cyber-safety',
+    title: '사이버폭력 예방 활동',
+    category: '디지털 윤리',
+    grade: '전체',
+    desc: '온라인 상황 시뮬레이션을 통해 사이버폭력을 예방하는 방법을 배워요.',
+    emoji: '🛡️',
+    bg: 'linear-gradient(135deg, #e0f7fa, #b2ebf2)',
+    tags: ['사이버폭력', '예방', '디지털시민'],
+    goals: ['사이버폭력의 유형을 구분할 수 있다.', '올바른 디지털 의사소통 방법을 실천한다.'],
+    time: '20분',
+    url: '#',
+    isToday: false,
+    isPublic: true
+  },
+  {
+    id: 'privacy-quiz',
+    title: '개인정보 보호 퀴즈',
+    category: '디지털 윤리',
+    grade: '전체',
+    desc: '개인정보 관련 상황을 판단하고 올바른 보호 방법을 알아보는 퀴즈입니다.',
+    emoji: '🔐',
+    bg: 'linear-gradient(135deg, #f3e5f5, #e1bee7)',
+    tags: ['개인정보', '퀴즈', '보안'],
+    goals: ['개인정보의 종류를 파악한다.', '개인정보 보호 방법을 실천할 수 있다.'],
+    time: '15분',
+    url: '#',
+    isToday: false,
+    isPublic: true
+  },
+  /* 퀴즈·복습 */
+  {
+    id: 'random-quiz',
+    title: '개념 랜덤 퀴즈',
+    category: '퀴즈·복습',
+    grade: '전체',
+    desc: '단원별 핵심 개념을 랜덤으로 출제하여 빠르게 복습할 수 있는 퀴즈앱입니다.',
+    emoji: '🎯',
+    bg: 'linear-gradient(135deg, #fff8e1, #ffecb3)',
+    tags: ['복습', '개념', '퀴즈'],
+    goals: ['단원별 핵심 개념을 정리할 수 있다.', '자기 학습 수준을 점검한다.'],
+    time: '10분',
+    url: '#',
+    isToday: false,
+    isPublic: true
+  },
+  {
+    id: 'flashcard',
+    title: '암기 카드 학습',
+    category: '퀴즈·복습',
+    grade: '전체',
+    desc: '앞면에 용어, 뒷면에 설명이 담긴 카드를 뒤집으며 개념을 익혀요.',
+    emoji: '🃏',
+    bg: 'linear-gradient(135deg, #e8f5e9, #c8e6c9)',
+    tags: ['암기', '플래시카드', '개념'],
+    goals: ['핵심 용어와 개념을 암기할 수 있다.'],
+    time: '15분',
+    url: '#',
+    isToday: false,
+    isPublic: true
+  },
+  /* 프로젝트 */
+  {
+    id: 'card-news',
+    title: '카드뉴스 제작 도우미',
+    category: '프로젝트',
+    grade: '전체',
+    desc: '주제를 선정하고 카드뉴스 형식으로 정보를 정리하고 제작하는 활동입니다.',
+    emoji: '📰',
+    bg: 'linear-gradient(135deg, #fce4ec, #f8bbd0)',
+    tags: ['카드뉴스', '글쓰기', '디자인'],
+    goals: ['정보를 효과적으로 구조화할 수 있다.', '카드뉴스 형식으로 메시지를 전달한다.'],
+    time: '30분',
+    url: '#',
+    isToday: false,
+    isPublic: true
+  },
+  {
+    id: 'group-roles',
+    title: '모둠 역할 나누기',
+    category: '프로젝트',
+    grade: '전체',
+    desc: '프로젝트 모둠의 역할을 공정하게 나누고 개인 목표를 설정하는 활동입니다.',
+    emoji: '👥',
+    bg: 'linear-gradient(135deg, #e8eaf6, #c5cae9)',
+    tags: ['협동학습', '역할분담', '모둠'],
+    goals: ['팀원 간 역할을 명확히 정할 수 있다.', '협업의 중요성을 인식한다.'],
+    time: '15분',
+    url: '#',
+    isToday: false,
+    isPublic: true
+  },
+  /* 학급도구 */
+  {
+    id: 'random-presenter',
+    title: '발표자 랜덤 뽑기',
+    category: '학급도구',
+    grade: '전체',
+    desc: '학급 명단에서 발표자를 무작위로 추첨하는 교사용 도구입니다.',
+    emoji: '🎲',
+    bg: 'linear-gradient(135deg, #fff3e0, #ffe0b2)',
+    tags: ['뽑기', '발표', '무작위'],
+    goals: ['공정한 발표자 선정을 도와준다.'],
+    time: '즉시',
+    url: '#',
+    isToday: false,
+    isPublic: true
+  },
+  {
+    id: 'timer',
+    title: '수업 타이머',
+    category: '학급도구',
+    grade: '전체',
+    desc: '활동별 시간을 설정하고 시각적으로 표시하는 수업용 타이머입니다.',
+    emoji: '⏱️',
+    bg: 'linear-gradient(135deg, #e0f7fa, #b2ebf2)',
+    tags: ['타이머', '시간관리', '수업'],
+    goals: ['정해진 시간 안에 활동을 완료한다.'],
+    time: '즉시',
+    url: '#',
+    isToday: false,
+    isPublic: true
   }
 ];
 
-/* ─── State ──────────────────────────────────────────── */
-let apps = [];
-let currentCategory = 'All Apps';
+/* ── State ────────────────────────────────────────── */
+let currentCategory = '전체앱';
+let currentApp = null;
 let isTeacherMode = false;
 let searchQuery = '';
 
-/* ─── Init ───────────────────────────────────────────── */
-function init() {
-  loadApps();
-  renderSidebar();
-  renderGrid();
-}
-
-function loadApps() {
-  const stored = localStorage.getItem('portal_apps');
-  if (stored) {
-    try {
-      apps = JSON.parse(stored);
-    } catch(e) {
-      apps = [...DEFAULT_APPS];
-    }
-  } else {
-    apps = [...DEFAULT_APPS];
-    localStorage.setItem('portal_apps', JSON.stringify(apps));
+/* ── Ethics Gate ──────────────────────────────────── */
+function checkEthicsGate() {
+  const agreed = localStorage.getItem('ethics_agreed');
+  if (!agreed) {
+    document.getElementById('ethics-overlay').classList.remove('hidden');
   }
 }
 
-function persistApps() {
-  localStorage.setItem('portal_apps', JSON.stringify(apps));
+function enterPortal() {
+  localStorage.setItem('ethics_agreed', 'true');
+  const overlay = document.getElementById('ethics-overlay');
+  overlay.style.animation = 'fadeIn .3s ease reverse forwards';
+  setTimeout(() => overlay.classList.add('hidden'), 300);
 }
 
-/* ─── UI Rendering ───────────────────────────────────── */
-function renderSidebar() {
-  const container = document.getElementById('nav-items-container');
-  const cats = ['All Apps', ...new Set(apps.map(a => a.category))];
-  
-  container.innerHTML = cats.map(cat => {
-    const isActive = cat === currentCategory ? 'active' : '';
-    let count = cat === 'All Apps' ? apps.length : apps.filter(a => a.category === cat).length;
-    return \`
-      <div class="nav-item \${isActive}" onclick="setCategory('\${cat}')">
-        <span>\${cat}</span>
-        <span class="micro-cap" style="opacity:0.6">\${count}</span>
-      </div>
-    \`;
-  }).join('');
+function openEthicsGuide() {
+  const overlay = document.getElementById('ethics-overlay');
+  overlay.classList.remove('hidden');
+  overlay.style.animation = 'fadeIn .3s ease';
 }
 
-function setCategory(cat) {
-  currentCategory = cat;
-  document.getElementById('section-title').textContent = cat;
-  renderSidebar();
-  renderGrid();
-}
-
-function handleSearch(val) {
-  searchQuery = val.toLowerCase().trim();
-  renderGrid();
-}
-
-function renderGrid() {
-  const grid = document.getElementById('app-grid');
-  
-  let filtered = apps.filter(a => {
-    const matchCat = currentCategory === 'All Apps' ? true : a.category === currentCategory;
-    const matchSearch = a.title.toLowerCase().includes(searchQuery) || a.desc.toLowerCase().includes(searchQuery);
-    return matchCat && matchSearch;
-  });
-
-  // Sort: Today's apps first
-  filtered.sort((a, b) => (b.isToday ? 1 : 0) - (a.isToday ? 1 : 0));
-
-  if (filtered.length === 0) {
-    grid.innerHTML = \`<div class="body-md" style="color:var(--ink-mute); grid-column: 1/-1;">No apps found.</div>\`;
-    return;
-  }
-
-  grid.innerHTML = filtered.map(app => {
-    const todayClass = app.isToday ? 'today-card' : '';
-    const eyebrowLabel = app.isToday ? '★ Today\\'s App' : app.category;
-    const btnClass = app.isToday ? 'btn-outline' : 'btn-secondary';
-    
-    return \`
-      <div class="app-card \${todayClass}" onclick="window.open('\${app.url}', '_blank')">
-        <button class="btn-delete" onclick="deleteApp(event, '\${app.id}')" title="Delete App">×</button>
-        <div class="card-content">
-          <span class="micro-cap card-eyebrow">\${eyebrowLabel}</span>
-          <h3 class="heading-sm">\${app.title}</h3>
-          <p class="caption">\${app.desc}</p>
-        </div>
-        <div class="card-actions">
-          <button class="btn \${btnClass} btn-cap">Launch App</button>
-        </div>
-      </div>
-    \`;
-  }).join('');
-}
-
-/* ─── Teacher Mode (Admin) ───────────────────────────── */
+/* ── Teacher Mode ─────────────────────────────────── */
 function toggleTeacherMode() {
   isTeacherMode = !isTeacherMode;
-  const btn = document.getElementById('teacher-toggle');
-  const adminLabel = document.getElementById('admin-label');
-  const adminActions = document.getElementById('admin-actions');
-  const grid = document.getElementById('app-grid');
-
+  const btn = document.getElementById('btn-teacher-toggle');
+  const sec = document.getElementById('teacher-section');
   if (isTeacherMode) {
-    btn.textContent = 'Exit Teacher Mode';
-    btn.classList.replace('btn-secondary', 'btn-primary');
-    adminLabel.style.display = 'block';
-    adminActions.style.display = 'block';
-    grid.classList.add('teacher-active');
+    btn.textContent = '🎓 학생 보기';
+    btn.style.background = 'linear-gradient(135deg, #66bb6a, #43a047)';
+    btn.style.color = '#fff';
+    sec.style.display = 'block';
   } else {
-    btn.textContent = 'Teacher Mode';
-    btn.classList.replace('btn-primary', 'btn-secondary');
-    adminLabel.style.display = 'none';
-    adminActions.style.display = 'none';
-    grid.classList.remove('teacher-active');
+    btn.textContent = '👩‍🏫 교사 보기';
+    btn.style.background = '';
+    btn.style.color = '';
+    sec.style.display = 'none';
+  }
+  renderApps();
+}
+
+/* ── Category Filter ──────────────────────────────── */
+function filterCategory(cat) {
+  currentCategory = cat;
+  searchQuery = '';
+  document.getElementById('search-input').value = '';
+
+  document.querySelectorAll('.nav-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.cat === cat);
+  });
+
+  renderApps();
+
+  const title = document.getElementById('section-apps-title');
+  title.innerHTML = `<span class="dot"></span> ${cat === '전체앱' ? '전체 앱' : cat}`;
+}
+
+/* ── Search ───────────────────────────────────────── */
+function handleSearch(query) {
+  searchQuery = query.trim().toLowerCase();
+  renderApps();
+}
+
+/* ── Render ───────────────────────────────────────── */
+function updateCounts() {
+  const cats = ['코딩', '인공지능', '디지털 윤리', '퀴즈·복습', '프로젝트', '학급도구'];
+  document.getElementById('count-all').textContent = APPS.filter(a => a.isPublic).length;
+  cats.forEach(c => {
+    const el = document.getElementById('count-' + c);
+    if (el) el.textContent = APPS.filter(a => a.category === c && a.isPublic).length;
+  });
+}
+
+function matchesSearch(app) {
+  if (!searchQuery) return true;
+  const hay = [app.title, app.category, app.grade, app.desc, ...(app.tags || [])].join(' ').toLowerCase();
+  return hay.includes(searchQuery);
+}
+
+function renderApps() {
+  const todayStrip  = document.getElementById('strip-today');
+  const appsStrip   = document.getElementById('strip-apps');
+  const todaySec    = document.getElementById('section-today');
+
+  // Today strip
+  const todayApps = APPS.filter(a => a.isToday && a.isPublic && matchesSearch(a));
+  todaySec.style.display = todayApps.length ? 'block' : 'none';
+  todayStrip.innerHTML = todayApps.map(app => renderTodayCard(app)).join('');
+
+  // Main strip
+  let filtered = APPS.filter(a => {
+    if (!a.isPublic) return false;
+    if (!matchesSearch(a)) return false;
+    if (currentCategory === '전체앱') return true;
+    if (currentCategory === '오늘의 수업앱') return a.isToday;
+    return a.category === currentCategory;
+  });
+
+  if (filtered.length === 0) {
+    appsStrip.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">🔍</div>
+        <p>검색 결과가 없습니다.<br>다른 키워드로 검색해 보세요.</p>
+      </div>`;
+  } else {
+    appsStrip.innerHTML = filtered.map(app => renderCard(app)).join('');
   }
 }
 
-/* ─── Add & Delete Logic ─────────────────────────────── */
+function renderCard(app) {
+  return `
+    <div class="app-card" id="card-${app.id}" onclick="openPreview('${app.id}')" tabindex="0" role="button" aria-label="${app.title} 미리보기">
+      <div class="card-thumb" style="background:${app.bg}">${app.emoji}</div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="cat-badge">${app.category}</span>
+          <span class="grade-badge">${app.grade}</span>
+          ${app.isToday ? '<span class="status-badge">오늘 사용</span>' : ''}
+        </div>
+        <div class="card-title">${app.title}</div>
+        <div class="card-desc">${app.desc}</div>
+        <div class="card-tags">
+          ${(app.tags||[]).map(t=>`<span class="tag">#${t}</span>`).join('')}
+        </div>
+        <button class="btn-preview" onclick="event.stopPropagation(); openPreview('${app.id}')">미리보기</button>
+        ${isTeacherMode ? `<button class="btn-preview" style="background:#fee2e2; color:#ef4444; margin-top:5px;" onclick="event.stopPropagation(); deleteApp('${app.id}')">삭제</button>` : ''}
+      </div>
+    </div>`;
+}
+
+function renderTodayCard(app) {
+  return `
+    <div class="today-card" id="today-card-${app.id}" onclick="openPreview('${app.id}')" tabindex="0" role="button" aria-label="${app.title} 오늘의 수업앱">
+      <div class="card-thumb" style="background: rgba(255,255,255,.12)">${app.emoji}</div>
+      <div class="card-body">
+        <div class="card-label">⭐ 오늘의 수업앱</div>
+        <div class="card-title">${app.title}</div>
+        <div class="card-desc">${app.desc}</div>
+        <button class="btn-enter" onclick="event.stopPropagation(); openPreview('${app.id}')">🚀 시작하기</button>
+      </div>
+    </div>`;
+}
+
+/* ── App Preview Modal ────────────────────────────── */
+function openPreview(appId) {
+  const app = APPS.find(a => a.id === appId);
+  if (!app) return;
+  currentApp = app;
+
+  document.getElementById('modal-thumb').style.background = app.bg;
+  document.getElementById('modal-thumb').childNodes[0].style.cssText = `
+    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    font-size:80px;`;
+  // Re-render thumb content
+  const thumb = document.getElementById('modal-thumb');
+  thumb.style.background = app.bg;
+  thumb.innerHTML = `
+    <span style="font-size:80px;">${app.emoji}</span>
+    <button class="modal-close-btn" onclick="closePreviewDirect()" aria-label="닫기">✕</button>
+  `;
+
+  document.getElementById('modal-meta').innerHTML = `
+    <span class="cat-badge">${app.category}</span>
+    <span class="grade-badge" style="border:1px solid #e0e0e0;padding:2px 9px;border-radius:90px;font-size:10px;">${app.grade}</span>
+    <span style="font-size:10px;color:#9b9b9b;padding:2px 9px;">⏱ ${app.time}</span>
+  `;
+  document.getElementById('modal-app-title').textContent = app.title;
+  document.getElementById('modal-desc').textContent = app.desc;
+  document.getElementById('modal-goals').innerHTML =
+    (app.goals||[]).map(g=>`<div class="modal-goal-item">${g}</div>`).join('');
+  document.getElementById('modal-info-row').innerHTML = `
+    <span class="modal-info-chip"><span class="chip-icon">📂</span> ${app.category}</span>
+    <span class="modal-info-chip"><span class="chip-icon">🎓</span> ${app.grade}</span>
+    <span class="modal-info-chip"><span class="chip-icon">⏱</span> ${app.time}</span>
+  `;
+
+  document.getElementById('preview-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePreview(e) {
+  if (e.target === document.getElementById('preview-overlay')) closePreviewDirect();
+}
+function closePreviewDirect() {
+  document.getElementById('preview-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+  currentApp = null;
+}
+
+function runApp() {
+  if (!currentApp) return;
+  if (currentApp.url && currentApp.url !== '#') {
+    window.open(currentApp.url, '_blank', 'noopener');
+  } else {
+    alert(`"${currentApp.title}" 앱은 현재 준비 중입니다.\n곧 업데이트될 예정이에요! 🚀`);
+  }
+}
+
+/* ── Legal Modals ─────────────────────────────────── */
+function openLegal(overlayId) {
+  document.getElementById(overlayId).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLegal(overlayId, e) {
+  if (e.target === document.getElementById(overlayId)) closeLegalDirect(overlayId);
+}
+function closeLegalDirect(overlayId) {
+  document.getElementById(overlayId).classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ── Keyboard accessibility ───────────────────────── */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closePreviewDirect();
+    closeLegalDirect('terms-overlay');
+    closeLegalDirect('privacy-overlay');
+  }
+});
+
+/* ── Footer link keyboard support ────────────────── */
+document.querySelectorAll('.footer-link[tabindex="0"]').forEach(el => {
+  el.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.click(); }
+  });
+});
+
+/* ── App Registration (Teacher) ───────────────────── */
 function openAddAppModal() {
-  document.getElementById('add-app-form').reset();
-  document.getElementById('add-app-modal').classList.add('open');
+  document.getElementById('add-app-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
 }
-
-function closeModal(e, id) {
-  if (e.target.id === id) closeModalDirect(id);
+function closeAddAppModal(e) {
+  if (e.target === document.getElementById('add-app-overlay')) closeAddAppModalDirect();
 }
-
-function closeModalDirect(id) {
-  document.getElementById(id).classList.remove('open');
+function closeAddAppModalDirect() {
+  document.getElementById('add-app-overlay').classList.remove('open');
+  document.body.style.overflow = '';
 }
+function saveApp() {
+  const title = document.getElementById('add-app-title-input').value.trim();
+  const cat = document.getElementById('add-app-category').value;
+  const emoji = document.getElementById('add-app-emoji').value.trim() || '🚀';
+  const url = document.getElementById('add-app-url').value.trim() || '#';
+  const desc = document.getElementById('add-app-desc').value.trim();
 
-function saveApp(e) {
-  e.preventDefault();
-  
+  if(!title) { alert('앱 이름을 입력하세요.'); return; }
+
   const newApp = {
-    id: 'app-' + Date.now(),
-    title: document.getElementById('form-title').value,
-    category: document.getElementById('form-category').value,
-    desc: document.getElementById('form-desc').value,
-    url: document.getElementById('form-url').value,
-    isToday: document.getElementById('form-today').checked
+    id: 'app_' + Date.now(),
+    title,
+    category: cat,
+    grade: '전체',
+    desc,
+    emoji,
+    bg: 'linear-gradient(135deg, #f9f0ff, #efe2ff)',
+    tags: ['사용자추가'],
+    goals: [],
+    time: '즉시',
+    url,
+    isToday: false,
+    isPublic: true
   };
 
-  apps.push(newApp);
-  persistApps();
+  APPS.push(newApp);
+  saveAppsToStorage();
   
-  closeModalDirect('add-app-modal');
-  renderSidebar();
-  renderGrid();
+  closeAddAppModalDirect();
+  
+  // Clear inputs
+  document.getElementById('add-app-title-input').value = '';
+  document.getElementById('add-app-emoji').value = '';
+  document.getElementById('add-app-url').value = '';
+  document.getElementById('add-app-desc').value = '';
+  
+  updateCounts();
+  renderApps();
 }
-
-function deleteApp(e, id) {
-  e.stopPropagation(); // prevent opening URL
-  if(confirm('Are you sure you want to delete this app?')) {
-    apps = apps.filter(a => a.id !== id);
-    persistApps();
-    renderSidebar();
-    renderGrid();
+function deleteApp(id) {
+  if (confirm('이 앱을 삭제하시겠습니까?')) {
+    APPS = APPS.filter(a => a.id !== id);
+    saveAppsToStorage();
+    updateCounts();
+    renderApps();
   }
 }
 
-document.addEventListener('DOMContentLoaded', init);
+/* ── Init ─────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  loadApps();
+  updateCounts();
+  renderApps();
+  checkEthicsGate();
+});
 </script>
 </body>
 </html>
